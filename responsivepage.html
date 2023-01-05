@@ -1,0 +1,257 @@
+<!-- -----------------------------------BASELINE
+https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML/Document_and_website_structure 
+
+https://codepen.io/jensimmons/pen/dybjNLQ -->
+
+
+<!DOCTYPE html>
+
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <title>Baseline Webpage</title>
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
+    <!-- <meta name="description" content="A description of this site that will show up in the search engine results."> -->
+    <!-- <meta name="application-name" content="Filament Group"> -->
+    <!-- <meta name="msapplication-TileImage" content="/images/icons/mstile-144x144.png"> -->
+    <!-- <meta name="theme-color" content="#247200"> -->
+    <!-- <link rel="manifest" href="/webappmanifest.json"> -->
+    <!-- <link href="main.css" rel="stylesheet"> -->
+    <!-- <link rel="icon" href="favicon.ico"> -->
+    <!-- <link rel="preload" href="myFont.woff2" as="font" type="font/woff2" crossorigin="anonymous"> -->
+    <!-- <script src="my-javascript-file.js"></script> -->
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            background: white;
+        }
+
+        main {
+            width: 70%;
+            margin: 10vw auto;
+        }
+
+        img {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        ul,
+        li {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        ul {
+            display: grid;
+            background: #1C1B1B;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            grid-auto-rows: 60px;
+            grid-auto-flow: dense;
+        }
+
+        ul {
+            -webkit-clip-path: polygon(10px 6px, calc(100% - 7px) 6px, calc(100% - 7px) calc(100% - 6px), 10px calc(100% - 6px));
+            clip-path: polygon(10px 6px, calc(100% - 7px) 6px, calc(100% - 7px) calc(100% - 6px), 10px calc(100% - 6px));
+        }
+
+        li {
+            height: 100%;
+            border: 6px solid black;
+        }
+
+        li:nth-child(1) {
+            grid-row: span 6;
+            grid-column: span 3;
+        }
+
+        li:nth-child(2) {
+            grid-row: span 4;
+            grid-column: span 4;
+        }
+
+        li:nth-child(3) {
+            grid-column: span 3;
+            grid-row: span 2;
+        }
+
+        li:nth-child(4) {
+            grid-row: span 2;
+        }
+
+        li:nth-child(5) {
+            grid-column: span 3;
+            grid-row: span 7;
+        }
+
+        li:nth-child(6) {
+            grid-column: span 3;
+            grid-row: span 5;
+        }
+
+        li:nth-child(7) {
+            grid-row: span 3;
+            grid-column: span 3;
+        }
+
+        li:nth-child(8) {
+            grid-column: span 2;
+            grid-row: span 5;
+        }
+
+        li:nth-child(9) {
+            grid-row: span 4;
+        }
+
+        li:nth-child(10) {
+            grid-column: span 3;
+            grid-row: span 5;
+        }
+
+        li:nth-child(11) {
+            grid-row: span 6;
+            grid-column: span 6;
+        }
+
+        li:nth-child(12) {
+            grid-column: span 12;
+            grid-row: span 3;
+        }
+
+        li:nth-child(13) {
+            grid-column: span 3;
+            grid-row: span 7;
+        }
+
+        li:nth-child(14) {
+            grid-column: span 3;
+            grid-row: span 6;
+        }
+
+        li:nth-child(15) {
+            grid-column: span 4;
+            grid-row: span 4;
+        }
+
+        li:nth-child(16) {
+            grid-row: span 4;
+            grid-column: span 4;
+        }
+
+        li:nth-child(17) {
+            grid-column: span 2;
+            grid-row: span 5;
+        }
+
+        li:nth-child(18) {
+            grid-column: span 5;
+            grid-row: span 5;
+        }
+
+        li:nth-child(19) {
+            grid-column: span 5;
+            grid-row: span 2;
+        }
+
+        li:nth-child(20) {
+            grid-column: span 6;
+            grid-row: span 2;
+        }
+
+        /* Style a Warning Message. Remove if Grid works --------------------------------------- */
+        .warning {
+            color: red;
+            font-size: 200%;
+        }
+
+        @supports (display: grid) {
+            .warning {
+                display: none;
+            }
+        }
+    </style>
+
+    <script>
+
+    </script>
+</head>
+
+<body>
+    <main>
+        <div class="warning">This demo only works in browsers that support CSS Grid Layout. If you can see this message,
+            then your browser doesn't supporting Grid. You can try out Grid in <a
+                href="https://nightly.mozilla.org/">Firefox Nightly</a> or <a
+                href="http://gridbyexample.com/browsers/">other browsers by flipping a flag</a>.</div>
+        <ul>
+            <li><img src="images/Cat painted on wall.jpeg" alt=""></li>
+            <li><img src="images/FB_IMG_1433388629967 2.jpg" alt=""></li>
+            <li><img src="images/Cat painted on wall_0002.jpeg" alt=""></li>
+            <li><img src="images/Pumpkin Carving_0001.jpeg" alt=""></li>
+            <li><img src="images/Lampheads.jpeg" alt=""></li>
+            <li><img src="images/Fist on ipad Procreate.jpeg" alt=""></li>
+            <li><img src="images/Light and Shade on ipad Procreate_0002.jpeg" alt=""></li>
+            <li><img src="images/FB_IMG_1433388644687.jpg" alt=""></li>
+            <li><img src="images/Light and Shade on ipad Procreate.jpeg" alt=""></li>
+            <li><img src="images/Manga Girls_0003.jpeg" alt=""></li>
+            <li><img src="images/The Occamy on ipad Procreate.jpeg" alt=""></li>
+            <li><img src="images/Manga and Anime Montage.png" alt=""></li>
+            <li><img src="images/20150801_083226.jpg" alt=""></li>
+            <li><img src="images/Manga Sadness_0002.jpeg" alt=""></li>
+            <li><img src="images/manga9.png" alt=""></li>
+            <li><img src="images/DSC_2618.jpg" alt=""></li>
+            <li><img src="images/Niffler pencil drawing.jpeg" alt=""></li>
+            <li><img src="images/Pumpkin Carving - Spiders.jpeg" alt=""></li>
+            <li><img src="images/pumpkin_carving___ghostbusters.jpg" alt=""></li>
+            <li><img src="images/Hamster_0001.png" alt=""></li>
+            <li><img src="images/The Occamy on ipad Procreate.jpeg" alt=""></li>
+            <li><img src="images/Abstract 01.jpg" alt=""></li>
+            <li><img src="images/20150725_080759.jpg" alt=""></li>
+            <li><img src="images/IMG_0067.jpg" alt=""></li>
+            <li><img src="images/Comedy Sketches.jpg" alt=""></li>
+            <li><img src="images/Christmas Wreath.jpeg" alt=""></li>
+            <li><img src="images/DSC_2456.jpg" alt=""></li>
+            <li><img src="images/20150801_083508.jpg" alt=""></li>
+            <li><img src="images/Captain America Shield Acrylic Painting.jpg" alt=""></li>
+            <li><img src="images/Dragon with biro.jpg" alt=""></li>
+            <li><img src="images/Eyes.jpg" alt=""></li>
+            <li><img src="images/Female Torso.jpg" alt=""></li>
+            <li><img src="images/file.png" alt=""></li>
+            <li><img src="images/file3.png" alt=""></li>
+            <li><img src="images/Hamster_0001.png" alt=""></li>
+            <li><img src="images/20150801_083317.jpg" alt=""></li>
+            <li><img src="images/Left Eye - Procreate Software Test.jpg" alt=""></li>
+            <li><img src="images/Original Ironman Pencil Drawing.jpg" alt=""></li>
+            <li><img src="images/DSC_2599.jpg" alt=""></li>
+            <li><img src="images/Manga Girl.jpg" alt=""></li>
+            <li><img src="images/Reflection.jpg" alt=""></li>
+            <li><img src="images/Scanned-image-1-0.jpg" alt=""></li>
+            <li><img src="images/Scanned-image-22-0.jpg" alt=""></li>
+            <li><img src="images/Scanned-image-23-0.jpg" alt=""></li>
+            <li><img src="images/Scanned-image-24-0.jpg" alt=""></li>
+            <li><img src="images/20150801_083235.jpg" alt=""></li>
+            <li><img src="images/Scanned-image-22-0.jpg" alt=""></li>
+            <li><img src="images/20150801_083508.jpg" alt=""></li>
+            <li><img src="images/Scanned-image-26-0.jpg" alt=""></li>
+            <li><img src="images/Scanned-image-6-0.jpg" alt=""></li>
+            <li><img src="images/Scanned-image-27-0.jpg" alt=""></li>
+            <li><img src="images/Scanned-image-29-0.jpg" alt=""></li>
+            <li><img src="images/Scanned-image-30-0.jpg" alt=""></li>
+            <li><img src="images/Scanned-image-5-0.jpg" alt=""></li>
+            <li><img src="images/Scanned-image-12-0.jpg" alt=""></li>
+            <li><img src="images/Sphere.jpg" alt=""></li>
+            <li><img src="images/Captain America Shield Acrylic Painting.jpg" alt=""></li>
+            <li><img src="images/Eye.jpg" alt=""></li>
+        </ul>
+    </main>
+
+</body>
+
+</html>
