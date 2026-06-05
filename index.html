@@ -4,15 +4,15 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Art Gallery | Wayne Barrass-Brown</title>
+    <title>Wayne Barrass-Brown | Art Portfolio</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- <meta name="description" content="A description of this site that will show up in the search engine results."> -->
+    <meta name="description" content="Portfolio of original artwork by Wayne Barrass-Brown, including illustration, painting, digital art, and selected personal projects.">
     <!-- <meta name="application-name" content="Filament Group"> -->
     <!-- <meta name="msapplication-TileImage" content="/images/icons/mstile-144x144.png"> -->
-    <meta name="theme-color" content="#162033">
+    <meta name="theme-color" content="#5b4a82">
     <!-- <link rel="manifest" href="/webappmanifest.json"> -->
     <!-- <link href="main.css" rel="stylesheet"> -->
     <!-- <link rel="icon" href="favicon.ico"> -->
@@ -21,16 +21,20 @@
 
     <style>
         :root {
-            --bg: #f3f5f8;
-            --surface: #ffffff;
-            --border: #d7dde5;
-            --text: #162033;
-            --text-muted: #5c6778;
-            --accent: #0f4c81;
-            --accent-soft: #e8f1fa;
-            --navy: #162033;
-            --shadow: 0 1px 2px rgba(22, 32, 51, 0.06), 0 8px 24px rgba(22, 32, 51, 0.06);
-            --shadow-hover: 0 10px 28px rgba(22, 32, 51, 0.1);
+            --bg-top: #fcf9f7;
+            --bg-bottom: #f6f2fa;
+            --surface: rgba(255, 255, 255, 0.96);
+            --border: rgba(107, 78, 155, 0.12);
+            --text: #2a2236;
+            --text-muted: #6f6678;
+            --accent: #6b5b95;
+            --accent-hot: #9a6b8f;
+            --accent-warm: #b8847a;
+            --accent-soft: #f3eff8;
+            --gradient-accent: linear-gradient(135deg, #6b5b95 0%, #8b6b9a 55%, #a67f8f 100%);
+            --gradient-header: linear-gradient(135deg, #453a63 0%, #6b5b95 48%, #8b6b8f 82%, #a67f6e 100%);
+            --shadow: 0 6px 22px rgba(69, 58, 99, 0.06);
+            --shadow-hover: 0 10px 30px rgba(69, 58, 99, 0.1);
             --radius-lg: 1rem;
             --radius-md: 0.7rem;
             --radius-pill: 999px;
@@ -51,7 +55,10 @@
         body {
             margin: 0;
             min-height: 100vh;
-            background: var(--bg);
+            background:
+                radial-gradient(circle at top left, rgba(184, 132, 122, 0.07), transparent 28rem),
+                radial-gradient(circle at top right, rgba(107, 91, 149, 0.08), transparent 30rem),
+                linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
         }
 
         main {
@@ -63,12 +70,11 @@
         .site-header {
             margin-bottom: 1.25rem;
             padding: clamp(1.5rem, 4vw, 2.25rem);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.18);
             border-radius: var(--radius-lg);
             color: #fff;
-            background: linear-gradient(180deg, #1b2a41 0%, var(--navy) 100%);
+            background: var(--gradient-header);
             box-shadow: var(--shadow);
-            border-bottom: 3px solid var(--accent);
         }
 
         .site-header__eyebrow {
@@ -122,24 +128,25 @@
         }
 
         button:hover {
-            border-color: #b8c3d1;
-            background: #f8fafc;
+            border-color: rgba(107, 91, 149, 0.22);
+            background: #fff;
         }
 
         button:focus-visible {
-            outline: 3px solid rgba(15, 76, 129, 0.28);
+            outline: 3px solid rgba(107, 91, 149, 0.22);
             outline-offset: 2px;
         }
 
         #toggle-add-artwork {
-            background: var(--accent);
-            border-color: var(--accent);
+            background: var(--gradient-accent);
+            border-color: transparent;
             color: #fff;
+            box-shadow: 0 6px 18px rgba(107, 91, 149, 0.16);
         }
 
         #toggle-add-artwork:hover {
-            background: #0c3f6b;
-            border-color: #0c3f6b;
+            filter: brightness(1.03);
+            border-color: transparent;
         }
 
         .add-artwork {
@@ -184,11 +191,51 @@
             background: var(--surface);
         }
 
-        .add-artwork__thumb {
+        .add-artwork__thumb,
+        .hidden-artwork__thumb-link img {
             width: 100%;
             height: auto;
             display: block;
             border-radius: var(--radius-md);
+        }
+
+        .hidden-artwork__item {
+            grid-template-columns: minmax(96px, 136px) 1fr;
+            align-items: start;
+        }
+
+        .hidden-artwork__thumb-link {
+            display: block;
+            align-self: start;
+            width: 100%;
+            line-height: 0;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background: var(--bg-bottom);
+            transition: border-color 0.18s ease, box-shadow 0.18s ease;
+        }
+
+        .hidden-artwork__thumb-link img {
+            border-radius: 0;
+        }
+
+        .hidden-artwork__thumb-link:hover {
+            border-color: rgba(107, 91, 149, 0.22);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .hidden-artwork__item .add-artwork__fields {
+            min-width: 0;
+        }
+
+        .hidden-artwork__item .gallery-actions {
+            margin-top: 0.75rem;
+        }
+
+        .hidden-artwork__item .category-menu__delete {
+            width: auto;
+            min-height: 2.6rem;
         }
 
         .add-artwork__fields label {
@@ -232,8 +279,8 @@
             padding: 0.75rem;
             border: 1px solid var(--border);
             border-radius: var(--radius-lg);
-            background: rgba(255, 255, 255, 0.94);
-            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(12px);
             box-shadow: var(--shadow);
         }
 
@@ -244,14 +291,66 @@
         }
 
         .filters button {
+            background: var(--accent-soft);
+            color: var(--accent);
+            border-color: transparent;
+        }
+
+        .filters button:hover {
             background: #fff;
-            color: var(--text-muted);
+            border-color: var(--border);
         }
 
         .filters button[aria-pressed="true"] {
-            background: var(--accent);
-            border-color: var(--accent);
+            background: var(--gradient-accent);
+            border-color: transparent;
             color: #fff;
+            box-shadow: 0 4px 14px rgba(107, 91, 149, 0.14);
+        }
+
+        .sub-filters {
+            margin-top: 0.65rem;
+            padding-top: 0.65rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .sub-filters button {
+            font-size: 0.88rem;
+            padding: 0.42rem 0.78rem;
+        }
+
+        .category-menu__tools {
+            border-top: 1px solid var(--border);
+        }
+
+        .category-menu__subtitle,
+        .add-artwork__tools-label {
+            margin: 0;
+            padding: 0.45rem 0.85rem 0.35rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .add-artwork__tools {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem 1rem;
+            margin-top: 0.75rem;
+        }
+
+        .add-artwork__tools .add-artwork__tools-label {
+            flex: 1 1 100%;
+            padding: 0;
+            margin-bottom: 0;
+        }
+
+        .add-artwork__tools label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            margin: 0;
+            color: var(--text);
         }
 
         #gallery {
@@ -281,12 +380,13 @@
             border-radius: var(--radius-md);
             background: var(--surface);
             box-shadow: var(--shadow);
-            transition: border-color 0.18s ease, box-shadow 0.18s ease;
+            transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
         }
 
         #gallery li a:hover {
-            border-color: #b8c3d1;
+            border-color: rgba(107, 91, 149, 0.22);
             box-shadow: var(--shadow-hover);
+            transform: translateY(-1px);
         }
 
         #gallery img {
@@ -373,20 +473,100 @@
         }
 
         .category-menu__hide:hover {
-            background: #f8fafc;
-            border-color: #b8c3d1;
-        }
-
-        .hidden-artwork__label {
-            margin: 0 0 0.65rem;
-            font-size: 0.9rem;
-            color: var(--text);
+            background: var(--accent-soft);
+            border-color: var(--border);
         }
 
         .hidden-artwork__meta {
-            margin: 0 0 0.65rem;
+            margin: 0 0 0.75rem;
             font-size: 0.8rem;
             color: var(--text-muted);
+        }
+
+        .category-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .category-list__item {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 0.75rem;
+            align-items: end;
+            padding: 0.85rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background: var(--surface);
+        }
+
+        .category-list__fields label {
+            display: block;
+            margin: 0;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .category-list__label {
+            width: 100%;
+            font-family: inherit;
+            font-size: 0.95rem;
+            padding: 0.55rem 0.7rem;
+            margin-top: 0.25rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background: #fff;
+        }
+
+        .category-list__slug {
+            margin: 0.35rem 0 0;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        .category-list__slug code {
+            font-family: ui-monospace, Consolas, monospace;
+            font-size: 0.85em;
+        }
+
+        .category-list__actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .category-list__actions .category-menu__delete {
+            width: auto;
+            min-height: 2.6rem;
+        }
+
+        .category-add-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.65rem;
+            align-items: end;
+            margin-bottom: 1rem;
+        }
+
+        .category-add-form label {
+            flex: 1 1 12rem;
+            margin: 0;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .category-add-form input[type="text"] {
+            width: 100%;
+            font-family: inherit;
+            font-size: 0.95rem;
+            padding: 0.55rem 0.7rem;
+            margin-top: 0.25rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background: #fff;
         }
 
         @keyframes fade-up {
@@ -431,6 +611,14 @@
             .add-artwork__item {
                 grid-template-columns: 1fr;
             }
+
+            .hidden-artwork__thumb-link {
+                max-width: 12rem;
+            }
+
+            .category-list__item {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -452,13 +640,14 @@
 <body>
     <main>
         <header class="site-header">
-            <p class="site-header__eyebrow">Art Gallery</p>
+            <p class="site-header__eyebrow">Portfolio</p>
             <h1>Wayne Barrass-Brown</h1>
-            <p class="site-header__tagline">Things I made and doodled</p>
+            <p class="site-header__tagline">Original artwork across illustration, painting, and digital media.</p>
         </header>
         <div class="gallery-actions">
             <button type="button" id="toggle-add-artwork">Add artwork</button>
             <button type="button" id="toggle-hidden-artwork" hidden>Hidden artwork</button>
+            <button type="button" id="toggle-manage-categories">Manage categories</button>
             <button type="button" id="export-uploads" hidden>Export added artwork</button>
         </div>
         <section id="add-artwork" class="add-artwork" hidden>
@@ -479,25 +668,34 @@
             <h2>Hidden artwork</h2>
             <p class="add-artwork__hint">
                 Images hidden from the main gallery are stored here in this browser.
-                Show them again in the gallery, or delete them permanently.
+                Click a thumbnail to view it full size. Edit alt text and categories below each image.
             </p>
             <div id="hidden-artwork-list" class="add-artwork__preview"></div>
             <div class="add-artwork__actions">
                 <button type="button" id="hidden-artwork-close">Close</button>
             </div>
         </section>
+        <section id="manage-categories" class="add-artwork" hidden>
+            <h2>Manage categories</h2>
+            <p class="add-artwork__hint">
+                Add, rename, or remove categories. Changes apply in this browser and update filters,
+                image tags, and saved artwork settings. Renaming updates the filter id automatically.
+            </p>
+            <ul id="category-list" class="category-list"></ul>
+            <form id="add-category-form" class="category-add-form">
+                <label>
+                    New category
+                    <input type="text" id="new-category-label" placeholder="e.g. Watercolour" required>
+                </label>
+                <button type="submit">Add category</button>
+            </form>
+            <div class="add-artwork__actions">
+                <button type="button" id="manage-categories-close">Close</button>
+            </div>
+        </section>
         <div class="toolbar">
-            <nav class="filters" aria-label="Filter artwork by category">
-                <button type="button" data-filter="all" aria-pressed="true">All</button>
-                <button type="button" data-filter="digital" aria-pressed="false">Digital</button>
-                <button type="button" data-filter="manga" aria-pressed="false">Manga</button>
-                <button type="button" data-filter="pumpkins" aria-pressed="false">Pumpkins</button>
-                <button type="button" data-filter="sketches" aria-pressed="false">Sketches</button>
-                <button type="button" data-filter="figures" aria-pressed="false">Figures</button>
-                <button type="button" data-filter="painting" aria-pressed="false">Painting</button>
-                <button type="button" data-filter="photos" aria-pressed="false">Photos</button>
-                <button type="button" data-filter="other" aria-pressed="false">Other</button>
-            </nav>
+            <nav id="filters" class="filters" aria-label="Filter artwork by category"></nav>
+            <nav id="sub-filters" class="filters sub-filters" aria-label="Filter artwork by medium or tool" hidden></nav>
         </div>
         <ul id="gallery">
             <li data-categories="painting"><a href="images/Cat painted on wall.jpeg"><img src="images/display/Cat painted on wall.jpeg" alt="Cat painted on wall" loading="lazy"></a></li>
@@ -505,22 +703,22 @@
             <li data-categories="painting"><a href="images/Cat painted on wall_0002.jpeg"><img src="images/display/Cat painted on wall_0002.jpeg" alt="Cat painted on wall" loading="lazy"></a></li>
             <li data-categories="pumpkins"><a href="images/Pumpkin Carving_0001.jpeg"><img src="images/display/Pumpkin Carving_0001.jpeg" alt="Pumpkin Carving" loading="lazy"></a></li>
             <li data-categories="figures"><a href="images/Lampheads.jpeg"><img src="images/display/Lampheads.jpeg" alt="Lampheads" loading="lazy"></a></li>
-            <li data-categories="digital figures"><a href="images/Fist on ipad Procreate.jpeg"><img src="images/display/Fist on ipad Procreate.jpeg" alt="Fist on ipad Procreate" loading="lazy"></a></li>
-            <li data-categories="digital"><a href="images/Light and Shade on ipad Procreate_0002.jpeg"><img src="images/display/Light and Shade on ipad Procreate_0002.jpeg" alt="Light and Shade on ipad Procreate" loading="lazy"></a></li>
+            <li data-categories="digital figures" data-tools="ipad procreate"><a href="images/Fist on ipad Procreate.jpeg"><img src="images/display/Fist on ipad Procreate.jpeg" alt="Fist on ipad Procreate" loading="lazy"></a></li>
+            <li data-categories="digital" data-tools="ipad procreate"><a href="images/Light and Shade on ipad Procreate_0002.jpeg"><img src="images/display/Light and Shade on ipad Procreate_0002.jpeg" alt="Light and Shade on ipad Procreate" loading="lazy"></a></li>
             <li data-categories="photos"><a href="images/FB_IMG_1433388644687.jpg"><img src="images/display/FB_IMG_1433388644687.jpg" alt="Artwork photograph" loading="lazy"></a></li>
             <li data-categories="figures"><a href="images/RedLips1.png"><img src="images/display/RedLips1.png" alt="Red lips study" loading="lazy"></a></li>
-            <li data-categories="digital"><a href="images/Light and Shade on ipad Procreate.jpeg"><img src="images/display/Light and Shade on ipad Procreate.jpeg" alt="Light and Shade on ipad Procreate" loading="lazy"></a></li>
+            <li data-categories="digital" data-tools="ipad procreate"><a href="images/Light and Shade on ipad Procreate.jpeg"><img src="images/display/Light and Shade on ipad Procreate.jpeg" alt="Light and Shade on ipad Procreate" loading="lazy"></a></li>
             <li data-categories="manga"><a href="images/Manga Girls_0003.jpeg"><img src="images/display/Manga Girls_0003.jpeg" alt="Manga Girls" loading="lazy"></a></li>
             <li data-categories="manga"><a href="images/Manga and Anime Montage.png"><img src="images/display/Manga and Anime Montage.png" alt="Manga and Anime Montage" loading="lazy"></a></li>
             <li data-categories="photos"><a href="images/20150801_083226.jpg"><img src="images/display/20150801_083226.jpg" alt="Artwork photograph" loading="lazy"></a></li>
             <li data-categories="manga"><a href="images/Manga Sadness_0002.jpeg"><img src="images/display/Manga Sadness_0002.jpeg" alt="Manga Sadness" loading="lazy"></a></li>
             <li data-categories="manga"><a href="images/manga9.png"><img src="images/display/manga9.png" alt="Manga artwork" loading="lazy"></a></li>
             <li data-categories="photos"><a href="images/DSC_2618.jpg"><img src="images/display/DSC_2618.jpg" alt="Photograph 2618" loading="lazy"></a></li>
-            <li data-categories="manga sketches"><a href="images/Niffler pencil drawing.jpeg"><img src="images/display/Niffler pencil drawing.jpeg" alt="Niffler pencil drawing" loading="lazy"></a></li>
+            <li data-categories="manga sketches" data-tools="pencil"><a href="images/Niffler pencil drawing.jpeg"><img src="images/display/Niffler pencil drawing.jpeg" alt="Niffler pencil drawing" loading="lazy"></a></li>
             <li data-categories="pumpkins"><a href="images/Pumpkin Carving - Spiders.jpeg"><img src="images/display/Pumpkin Carving - Spiders.jpeg" alt="Pumpkin Carving - Spiders" loading="lazy"></a></li>
             <li data-categories="pumpkins"><a href="images/pumpkin_carving___ghostbusters.jpg"><img src="images/display/pumpkin_carving___ghostbusters.jpg" alt="pumpkin carving ghostbusters" loading="lazy"></a></li>
             <li data-categories="manga"><a href="images/Hamster_0001.png"><img src="images/display/Hamster_0001.png" alt="Hamster" loading="lazy"></a></li>
-            <li data-categories="digital manga"><a href="images/The Occamy on ipad Procreate.jpeg"><img src="images/display/The Occamy on ipad Procreate.jpeg" alt="The Occamy on ipad Procreate" loading="lazy"></a></li>
+            <li data-categories="digital manga" data-tools="ipad procreate"><a href="images/The Occamy on ipad Procreate.jpeg"><img src="images/display/The Occamy on ipad Procreate.jpeg" alt="The Occamy on ipad Procreate" loading="lazy"></a></li>
             <li data-categories="other"><a href="images/Abstract 01.jpg"><img src="images/display/Abstract 01.jpg" alt="Abstract 01" loading="lazy"></a></li>
             <li data-categories="figures"><a href="images/Red Lips2.png"><img src="images/display/Red Lips2.png" alt="Red Lips2" loading="lazy"></a></li>
             <li data-categories="photos"><a href="images/20150725_080759.jpg"><img src="images/display/20150725_080759.jpg" alt="Artwork photograph" loading="lazy"></a></li>
@@ -530,14 +728,14 @@
             <li data-categories="photos"><a href="images/DSC_2456.jpg"><img src="images/display/DSC_2456.jpg" alt="Photograph 2456" loading="lazy"></a></li>
             <li data-categories="photos"><a href="images/20150801_083508.jpg"><img src="images/display/20150801_083508.jpg" alt="Artwork photograph" loading="lazy"></a></li>
             <li data-categories="manga painting"><a href="images/Captain America Shield Acrylic Painting.jpg"><img src="images/display/Captain America Shield Acrylic Painting.jpg" alt="Captain America Shield Acrylic Painting" loading="lazy"></a></li>
-            <li data-categories="sketches"><a href="images/Dragon with biro.jpg"><img src="images/display/Dragon with biro.jpg" alt="Dragon with biro" loading="lazy"></a></li>
+            <li data-categories="sketches" data-tools="pen"><a href="images/Dragon with biro.jpg"><img src="images/display/Dragon with biro.jpg" alt="Dragon with biro" loading="lazy"></a></li>
             <li data-categories="figures"><a href="images/Eyes.jpg"><img src="images/display/Eyes.jpg" alt="Eyes" loading="lazy"></a></li>
             <li data-categories="figures"><a href="images/Female Torso.jpg"><img src="images/display/Female Torso.jpg" alt="Female Torso" loading="lazy"></a></li>
             <li data-categories="manga sketches"><a href="images/manga-cat-girl-line-art.png"><img src="images/display/manga-cat-girl-line-art.png" alt="Manga cat girl line art" loading="lazy"></a></li>
             <li data-categories="manga sketches"><a href="images/fox-creature-line-art.png"><img src="images/display/fox-creature-line-art.png" alt="Fox creature line art" loading="lazy"></a></li>
             <li data-categories="photos"><a href="images/20150801_083317.jpg"><img src="images/display/20150801_083317.jpg" alt="Artwork photograph" loading="lazy"></a></li>
-            <li data-categories="digital figures"><a href="images/Left Eye - Procreate Software Test.jpg"><img src="images/display/Left Eye - Procreate Software Test.jpg" alt="Left Eye - Procreate Software Test" loading="lazy"></a></li>
-            <li data-categories="manga sketches"><a href="images/Original Ironman Pencil Drawing.jpg"><img src="images/display/Original Ironman Pencil Drawing.jpg" alt="Original Ironman Pencil Drawing" loading="lazy"></a></li>
+            <li data-categories="digital figures" data-tools="procreate"><a href="images/Left Eye - Procreate Software Test.jpg"><img src="images/display/Left Eye - Procreate Software Test.jpg" alt="Left Eye - Procreate Software Test" loading="lazy"></a></li>
+            <li data-categories="manga sketches" data-tools="pencil"><a href="images/Original Ironman Pencil Drawing.jpg"><img src="images/display/Original Ironman Pencil Drawing.jpg" alt="Original Ironman Pencil Drawing" loading="lazy"></a></li>
             <li data-categories="other"><a href="images/Rocks.jpg"><img src="images/display/Rocks.jpg" alt="Rocks" loading="lazy"></a></li>
             <li data-categories="photos"><a href="images/DSC_2599.jpg"><img src="images/display/DSC_2599.jpg" alt="Photograph 2599" loading="lazy"></a></li>
             <li data-categories="manga"><a href="images/Manga Girl.jpg"><img src="images/display/Manga Girl.jpg" alt="Manga Girl" loading="lazy"></a></li>
@@ -571,16 +769,16 @@
             <li data-categories="other"><a href="images/Dog Tags 002.jpeg"><img src="images/display/Dog Tags 002.jpeg" alt="Dog Tags" loading="lazy"></a></li>
             <li data-categories="other"><a href="images/Drone 002.jpeg"><img src="images/display/Drone 002.jpeg" alt="Drone" loading="lazy"></a></li>
             <li data-categories="other"><a href="images/Drone.jpeg"><img src="images/display/Drone.jpeg" alt="Drone" loading="lazy"></a></li>
-            <li data-categories="digital figures"><a href="images/Ear on ipad.jpeg"><img src="images/display/Ear on ipad.jpeg" alt="Ear on ipad" loading="lazy"></a></li>
+            <li data-categories="digital figures" data-tools="ipad"><a href="images/Ear on ipad.jpeg"><img src="images/display/Ear on ipad.jpeg" alt="Ear on ipad" loading="lazy"></a></li>
             <li data-categories="figures"><a href="images/Eye A4.jpeg"><img src="images/display/Eye A4.jpeg" alt="Eye A4" loading="lazy"></a></li>
             <li data-categories="figures"><a href="images/Eye Arrow.jpeg"><img src="images/display/Eye Arrow.jpeg" alt="Eye Arrow" loading="lazy"></a></li>
             <li data-categories="figures"><a href="images/Female Head Form Test.jpeg"><img src="images/display/Female Head Form Test.jpeg" alt="Female Head Form Test" loading="lazy"></a></li>
             <li data-categories="figures"><a href="images/Female Head Test 002.jpeg"><img src="images/display/Female Head Test 002.jpeg" alt="Female Head Test" loading="lazy"></a></li>
             <li data-categories="figures"><a href="images/Fist 001.jpeg"><img src="images/display/Fist 001.jpeg" alt="Fist" loading="lazy"></a></li>
             <li data-categories="figures"><a href="images/Fist 002.jpeg"><img src="images/display/Fist 002.jpeg" alt="Fist" loading="lazy"></a></li>
-            <li data-categories="digital figures"><a href="images/Four Spheres ipad.jpeg"><img src="images/display/Four Spheres ipad.jpeg" alt="Four Spheres ipad" loading="lazy"></a></li>
+            <li data-categories="digital figures" data-tools="ipad"><a href="images/Four Spheres ipad.jpeg"><img src="images/display/Four Spheres ipad.jpeg" alt="Four Spheres ipad" loading="lazy"></a></li>
             <li data-categories="other"><a href="images/George on the sofa.jpeg"><img src="images/display/George on the sofa.jpeg" alt="George on the sofa" loading="lazy"></a></li>
-            <li data-categories="digital figures"><a href="images/Iris on ipad.jpeg"><img src="images/display/Iris on ipad.jpeg" alt="Iris on ipad" loading="lazy"></a></li>
+            <li data-categories="digital figures" data-tools="ipad"><a href="images/Iris on ipad.jpeg"><img src="images/display/Iris on ipad.jpeg" alt="Iris on ipad" loading="lazy"></a></li>
             <li data-categories="manga"><a href="images/Ironman Helmet - Gold Titanium Alloy.jpeg"><img src="images/display/Ironman Helmet - Gold Titanium Alloy.jpeg" alt="Ironman Helmet - Gold Titanium Alloy" loading="lazy"></a></li>
             <li data-categories="manga"><a href="images/Ironman Work In Progress 3.jpeg"><img src="images/display/Ironman Work In Progress 3.jpeg" alt="Ironman Work In Progress 3" loading="lazy"></a></li>
             <li data-categories="manga"><a href="images/Ironman Work In Progress 4.jpeg"><img src="images/display/Ironman Work In Progress 4.jpeg" alt="Ironman Work In Progress 4" loading="lazy"></a></li>
@@ -624,13 +822,14 @@
     <div id="category-menu" class="category-menu" hidden>
         <p class="category-menu__title">Set categories</p>
         <form id="category-menu-form"></form>
+        <div id="category-menu-subfilters" hidden></div>
         <div class="category-menu__actions">
             <button type="button" id="category-menu-hide" class="category-menu__hide">Hide image</button>
             <button type="button" id="category-menu-delete" class="category-menu__delete" hidden>Delete permanently</button>
         </div>
     </div>
     <script>
-        const CATEGORIES = [
+        const DEFAULT_CATEGORIES = [
             { id: "digital", label: "Digital" },
             { id: "manga", label: "Manga" },
             { id: "pumpkins", label: "Pumpkins" },
@@ -640,7 +839,32 @@
             { id: "photos", label: "Photos" },
             { id: "other", label: "Other" },
         ];
+        const CATEGORY_SUB_FILTERS = {
+            digital: {
+                sectionLabel: "Created with",
+                allLabel: "All digital",
+                options: [
+                    { id: "ipad", label: "iPad" },
+                    { id: "procreate", label: "Procreate" },
+                    { id: "solidworks", label: "Solidworks" },
+                    { id: "adobe-photoshop", label: "Adobe Photoshop" },
+                    { id: "adobe-illustrator", label: "Adobe Illustrator" },
+                ],
+            },
+            sketches: {
+                sectionLabel: "Medium",
+                allLabel: "All sketches",
+                options: [
+                    { id: "pen", label: "Pen" },
+                    { id: "pencil", label: "Pencil" },
+                    { id: "coloured-pencil", label: "Coloured pencil" },
+                    { id: "charcoal", label: "Charcoal" },
+                ],
+            },
+        };
         const STORAGE_KEY = "gallery-category-overrides";
+        const TOOLS_STORAGE_KEY = "gallery-tool-overrides";
+        const CATEGORIES_STORAGE_KEY = "gallery-categories";
         const HIDDEN_STORAGE_KEY = "gallery-hidden-items";
         const UPLOAD_DB_NAME = "art-gallery-uploads";
         const UPLOAD_STORE_NAME = "uploads";
@@ -649,6 +873,7 @@
         const gallery = document.getElementById("gallery");
         const categoryMenu = document.getElementById("category-menu");
         const categoryMenuForm = document.getElementById("category-menu-form");
+        const categoryMenuSubfilters = document.getElementById("category-menu-subfilters");
         const categoryMenuHide = document.getElementById("category-menu-hide");
         const categoryMenuDelete = document.getElementById("category-menu-delete");
         const addArtworkPanel = document.getElementById("add-artwork");
@@ -660,8 +885,16 @@
         const addArtworkSubmit = document.getElementById("add-artwork-submit");
         const addArtworkClear = document.getElementById("add-artwork-clear");
         const exportUploadsButton = document.getElementById("export-uploads");
+        const filtersNav = document.getElementById("filters");
+        const subFiltersNav = document.getElementById("sub-filters");
+        const manageCategoriesPanel = document.getElementById("manage-categories");
+        const categoryList = document.getElementById("category-list");
+        const addCategoryForm = document.getElementById("add-category-form");
+        const newCategoryLabelInput = document.getElementById("new-category-label");
 
+        let categories = [];
         let activeFilter = "all";
+        let activeSubFilter = "all";
         let activeItem = null;
         let pendingUploads = [];
         let uploadDbPromise = null;
@@ -682,12 +915,427 @@
             item.dataset.categories = unique.length ? unique.join(" ") : "other";
         }
 
+        function getTools(item) {
+            return (item.dataset.tools || "").split(" ").filter(Boolean);
+        }
+
+        function setTools(item, tools) {
+            const unique = [...new Set(tools)].sort();
+            if (unique.length) {
+                item.dataset.tools = unique.join(" ");
+            } else {
+                delete item.dataset.tools;
+            }
+        }
+
+        function itemHasSubFilterCategory(item) {
+            return getCategories(item).some((categoryId) => CATEGORY_SUB_FILTERS[categoryId]);
+        }
+
+        function pruneToolsForCategories(tools, categoryList) {
+            const allowed = new Set();
+            Object.entries(CATEGORY_SUB_FILTERS).forEach(([categoryId, config]) => {
+                if (categoryList.includes(categoryId)) {
+                    config.options.forEach((option) => allowed.add(option.id));
+                }
+            });
+            return tools.filter((tool) => allowed.has(tool));
+        }
+
+        function inferDigitalToolsFromText(text) {
+            const lower = String(text).toLowerCase();
+            const tools = [];
+            if (/\bipad\b/.test(lower)) {
+                tools.push("ipad");
+            }
+            if (/procreate/.test(lower)) {
+                tools.push("procreate");
+            }
+            if (/solid\s*works?/.test(lower)) {
+                tools.push("solidworks");
+            }
+            if (/photoshop/.test(lower)) {
+                tools.push("adobe-photoshop");
+            }
+            if (/illustrator/.test(lower)) {
+                tools.push("adobe-illustrator");
+            }
+            return tools;
+        }
+
+        function inferSketchMediumsFromText(text) {
+            const lower = String(text).toLowerCase();
+            const tools = [];
+            if (/colou?red\s*pencil/.test(lower)) {
+                tools.push("coloured-pencil");
+            }
+            if (/\bcharcoal\b/.test(lower)) {
+                tools.push("charcoal");
+            }
+            if (/\bpencil\b/.test(lower) && !/colou?red\s*pencil/.test(lower)) {
+                tools.push("pencil");
+            }
+            if (/\b(biro|pen)\b/.test(lower)) {
+                tools.push("pen");
+            }
+            return tools;
+        }
+
+        function inferToolsFromItem(item) {
+            const href = item.querySelector("a")?.getAttribute("href") || "";
+            const alt = item.querySelector("img")?.getAttribute("alt") || "";
+            const text = `${href} ${alt}`;
+            const itemCategories = getCategories(item);
+            const tools = [];
+            if (itemCategories.includes("digital")) {
+                tools.push(...inferDigitalToolsFromText(text));
+            }
+            if (itemCategories.includes("sketches")) {
+                tools.push(...inferSketchMediumsFromText(text));
+            }
+            return [...new Set(tools)];
+        }
+
         function filenameToAlt(filename) {
             return filename
                 .replace(/\.[^.]+$/, "")
                 .replace(/[_-]+/g, " ")
                 .replace(/\s+/g, " ")
                 .trim();
+        }
+
+        function escapeAttr(value) {
+            return String(value)
+                .replace(/&/g, "&amp;")
+                .replace(/"/g, "&quot;")
+                .replace(/</g, "&lt;");
+        }
+
+        function slugifyCategory(label) {
+            const slug = label.toLowerCase().trim()
+                .replace(/[^a-z0-9]+/g, "-")
+                .replace(/^-+|-+$/g, "");
+            return slug || "other";
+        }
+
+        function loadCategories() {
+            try {
+                const stored = JSON.parse(localStorage.getItem(CATEGORIES_STORAGE_KEY) || "null");
+                if (Array.isArray(stored) && stored.length) {
+                    return stored;
+                }
+            } catch {
+                // fall through to defaults
+            }
+            return DEFAULT_CATEGORIES.map((category) => ({ ...category }));
+        }
+
+        function saveCategoriesList() {
+            localStorage.setItem(CATEGORIES_STORAGE_KEY, JSON.stringify(categories));
+        }
+
+        function getCategoryLabel(categoryId) {
+            return categories.find((category) => category.id === categoryId)?.label || categoryId;
+        }
+
+        function remapCategoryList(list, oldId, newId) {
+            if (!Array.isArray(list) || !list.length) {
+                return ["other"];
+            }
+            const remapped = list.map((category) => (category === oldId ? newId : category));
+            const unique = [...new Set(remapped)];
+            return unique.length ? unique : ["other"];
+        }
+
+        function removeCategoryFromList(list, categoryId) {
+            if (!Array.isArray(list) || !list.length) {
+                return ["other"];
+            }
+            const filtered = list.filter((category) => category !== categoryId);
+            return filtered.length ? filtered : ["other"];
+        }
+
+        function mergeDiscoveredCategories() {
+            const known = new Set(categories.map((category) => category.id));
+            const discovered = [];
+
+            const registerCategory = (categoryId) => {
+                if (!known.has(categoryId)) {
+                    discovered.push(categoryId);
+                    known.add(categoryId);
+                }
+            };
+
+            gallery.querySelectorAll("li").forEach((item) => {
+                getCategories(item).forEach(registerCategory);
+            });
+            loadHiddenRecords().forEach((record) => {
+                record.categories?.forEach(registerCategory);
+            });
+
+            discovered.sort().forEach((categoryId) => {
+                categories.push({
+                    id: categoryId,
+                    label: categoryId
+                        .split("-")
+                        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+                        .join(" "),
+                });
+            });
+
+            if (discovered.length) {
+                saveCategoriesList();
+            }
+        }
+
+        async function countCategoryUsage(categoryId) {
+            let count = 0;
+            gallery.querySelectorAll("li").forEach((item) => {
+                if (getCategories(item).includes(categoryId)) {
+                    count += 1;
+                }
+            });
+            loadHiddenRecords().forEach((record) => {
+                if (record.categories?.includes(categoryId)) {
+                    count += 1;
+                }
+            });
+            const uploads = await readUploads();
+            uploads.forEach((upload) => {
+                if (upload.categories?.includes(categoryId)) {
+                    count += 1;
+                }
+            });
+            return count;
+        }
+
+        function migrateCategoryId(oldId, newId) {
+            gallery.querySelectorAll("li").forEach((item) => {
+                const itemCategories = getCategories(item);
+                if (itemCategories.includes(oldId)) {
+                    setCategories(item, remapCategoryList(itemCategories, oldId, newId));
+                }
+            });
+
+            const overrides = loadOverrides();
+            Object.keys(overrides).forEach((key) => {
+                if (overrides[key].includes(oldId)) {
+                    overrides[key] = remapCategoryList(overrides[key], oldId, newId);
+                }
+            });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(overrides));
+
+            const hidden = loadHiddenRecords();
+            hidden.forEach((record) => {
+                record.categories = remapCategoryList(record.categories, oldId, newId);
+            });
+            saveHiddenRecords(hidden);
+        }
+
+        async function migrateCategoryIdInUploads(oldId, newId) {
+            const uploads = await readUploads();
+            const changedUploads = uploads.filter((upload) => upload.categories?.includes(oldId));
+            await Promise.all(changedUploads.map(async (upload) => {
+                upload.categories = remapCategoryList(upload.categories, oldId, newId);
+                await saveUpload(upload);
+            }));
+        }
+
+        async function removeCategoryFromAllItems(categoryId) {
+            gallery.querySelectorAll("li").forEach((item) => {
+                setCategories(item, removeCategoryFromList(getCategories(item), categoryId));
+            });
+
+            const overrides = loadOverrides();
+            Object.keys(overrides).forEach((key) => {
+                overrides[key] = removeCategoryFromList(overrides[key], categoryId);
+            });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(overrides));
+
+            const hidden = loadHiddenRecords();
+            hidden.forEach((record) => {
+                record.categories = removeCategoryFromList(record.categories, categoryId);
+            });
+            saveHiddenRecords(hidden);
+
+            const uploads = await readUploads();
+            const changedUploads = uploads.filter((upload) => upload.categories?.includes(categoryId));
+            await Promise.all(changedUploads.map(async (upload) => {
+                upload.categories = removeCategoryFromList(upload.categories, categoryId);
+                await saveUpload(upload);
+            }));
+        }
+
+        function renderFilters() {
+            filtersNav.innerHTML = `
+                <button type="button" data-filter="all" aria-pressed="${activeFilter === "all" ? "true" : "false"}">All</button>
+                ${categories.map(({ id, label }) => `
+                    <button type="button" data-filter="${escapeAttr(id)}" aria-pressed="${activeFilter === id ? "true" : "false"}">${escapeAttr(label)}</button>
+                `).join("")}
+            `;
+            renderSubFilters();
+        }
+
+        function renderSubFilters() {
+            const config = CATEGORY_SUB_FILTERS[activeFilter];
+            subFiltersNav.hidden = !config;
+            if (!config) {
+                subFiltersNav.innerHTML = "";
+                return;
+            }
+
+            subFiltersNav.innerHTML = `
+                <button type="button" data-sub-filter="all" aria-pressed="${activeSubFilter === "all" ? "true" : "false"}">${escapeAttr(config.allLabel)}</button>
+                ${config.options.map(({ id, label }) => `
+                    <button type="button" data-sub-filter="${escapeAttr(id)}" aria-pressed="${activeSubFilter === id ? "true" : "false"}">${escapeAttr(label)}</button>
+                `).join("")}
+            `;
+        }
+
+        function renderSubFilterCheckboxesForCategory(categoryId, selectedTools = []) {
+            const config = CATEGORY_SUB_FILTERS[categoryId];
+            if (!config) {
+                return "";
+            }
+            const selected = new Set(selectedTools);
+            return config.options.map(({ id, label }) => `
+                <label>
+                    <input type="checkbox" name="tool" value="${id}" ${selected.has(id) ? "checked" : ""}>
+                    ${label}
+                </label>
+            `).join("");
+        }
+
+        function renderSubFilterFormSections(selectedCategories, selectedTools = []) {
+            return Object.entries(CATEGORY_SUB_FILTERS)
+                .filter(([categoryId]) => selectedCategories.includes(categoryId))
+                .map(([categoryId, config]) => `
+                    <div class="add-artwork__tools" data-subfilter-category="${escapeAttr(categoryId)}">
+                        <p class="add-artwork__tools-label">${escapeAttr(config.sectionLabel)}</p>
+                        ${renderSubFilterCheckboxesForCategory(categoryId, selectedTools)}
+                    </div>
+                `).join("");
+        }
+
+        function renderCategoryMenuSubfilters(selectedCategories, selectedTools = []) {
+            const sections = Object.entries(CATEGORY_SUB_FILTERS)
+                .filter(([categoryId]) => selectedCategories.includes(categoryId))
+                .map(([categoryId, config]) => `
+                    <div class="category-menu__tools" data-subfilter-category="${escapeAttr(categoryId)}">
+                        <p class="category-menu__subtitle">${escapeAttr(config.sectionLabel)}</p>
+                        ${renderSubFilterCheckboxesForCategory(categoryId, selectedTools)}
+                    </div>
+                `).join("");
+            categoryMenuSubfilters.innerHTML = sections;
+            categoryMenuSubfilters.hidden = !sections;
+        }
+
+        function renderCategoryList() {
+            categoryList.innerHTML = categories.map(({ id, label }) => `
+                <li class="category-list__item" data-category-id="${escapeAttr(id)}">
+                    <div class="category-list__fields">
+                        <label>
+                            Name
+                            <input type="text" class="category-list__label" value="${escapeAttr(label)}">
+                        </label>
+                        <p class="category-list__slug">Filter id: <code>${escapeAttr(id)}</code></p>
+                    </div>
+                    <div class="category-list__actions">
+                        <button type="button" data-action="save">Save</button>
+                        <button type="button" data-action="delete" class="category-menu__delete"${id === "other" ? " disabled" : ""}>Delete</button>
+                    </div>
+                </li>
+            `).join("");
+        }
+
+        async function renameCategory(categoryId, newLabel) {
+            const trimmed = newLabel.trim();
+            if (!trimmed) {
+                alert("Category name is required.");
+                return false;
+            }
+
+            const index = categories.findIndex((category) => category.id === categoryId);
+            if (index < 0) {
+                return false;
+            }
+
+            const newId = slugifyCategory(trimmed);
+            if (categories.some((category) => category.id === newId && category.id !== categoryId)) {
+                alert("A category with that name already exists.");
+                return false;
+            }
+
+            if (newId !== categoryId) {
+                migrateCategoryId(categoryId, newId);
+                await migrateCategoryIdInUploads(categoryId, newId);
+                categories[index].id = newId;
+                if (activeFilter === categoryId) {
+                    activeFilter = newId;
+                }
+            }
+
+            categories[index].label = trimmed;
+            saveCategoriesList();
+            renderFilters();
+            renderCategoryList();
+            applyFilter(activeFilter);
+            if (!hiddenArtworkPanel.hidden) {
+                await renderHiddenGallery();
+            }
+            return true;
+        }
+
+        async function addCategory(label) {
+            const trimmed = label.trim();
+            if (!trimmed) {
+                return false;
+            }
+
+            let id = slugifyCategory(trimmed);
+            if (categories.some((category) => category.id === id)) {
+                alert("A category with that name already exists.");
+                return false;
+            }
+
+            categories.push({ id, label: trimmed });
+            saveCategoriesList();
+            renderFilters();
+            renderCategoryList();
+            return true;
+        }
+
+        async function deleteCategory(categoryId) {
+            if (categoryId === "other") {
+                return false;
+            }
+
+            const usage = await countCategoryUsage(categoryId);
+            const label = getCategoryLabel(categoryId);
+            if (usage > 0) {
+                const confirmed = confirm(
+                    `"${label}" is used on ${usage} item(s). Remove it from those items and delete the category?`
+                );
+                if (!confirmed) {
+                    return false;
+                }
+            } else if (!confirm(`Delete the "${label}" category?`)) {
+                return false;
+            }
+
+            await removeCategoryFromAllItems(categoryId);
+            categories = categories.filter((category) => category.id !== categoryId);
+            saveCategoriesList();
+            if (activeFilter === categoryId) {
+                activeFilter = "all";
+            }
+            renderFilters();
+            renderCategoryList();
+            applyFilter(activeFilter);
+            if (!hiddenArtworkPanel.hidden) {
+                await renderHiddenGallery();
+            }
+            return true;
         }
 
         function loadOverrides() {
@@ -702,6 +1350,24 @@
             const overrides = loadOverrides();
             overrides[imageKey] = categories;
             localStorage.setItem(STORAGE_KEY, JSON.stringify(overrides));
+        }
+
+        function loadToolOverrides() {
+            try {
+                return JSON.parse(localStorage.getItem(TOOLS_STORAGE_KEY) || "{}");
+            } catch {
+                return {};
+            }
+        }
+
+        function saveToolOverride(imageKey, tools) {
+            const overrides = loadToolOverrides();
+            if (tools.length) {
+                overrides[imageKey] = tools;
+            } else {
+                delete overrides[imageKey];
+            }
+            localStorage.setItem(TOOLS_STORAGE_KEY, JSON.stringify(overrides));
         }
 
         function clearOverride(imageKey) {
@@ -724,9 +1390,24 @@
                             src: href.replace(/^images\//, "images/display/"),
                             alt: filenameToAlt(href.split("/").pop() || "Artwork"),
                             categories: overrides[href] || ["other"],
+                            tools: [],
                         };
                     }
-                    return item;
+                    return {
+                        ...item,
+                        tools: Array.isArray(item.tools) ? item.tools : (() => {
+                            const text = `${item.href || ""} ${item.alt || ""}`;
+                            const recordCategories = item.categories || [];
+                            const inferred = [];
+                            if (recordCategories.includes("digital")) {
+                                inferred.push(...inferDigitalToolsFromText(text));
+                            }
+                            if (recordCategories.includes("sketches")) {
+                                inferred.push(...inferSketchMediumsFromText(text));
+                            }
+                            return [...new Set(inferred)];
+                        })(),
+                    };
                 });
             } catch {
                 return [];
@@ -785,16 +1466,59 @@
             });
         }
 
-        function applyFilter(category) {
-            activeFilter = category;
+        function applyStoredTools() {
+            const overrides = loadToolOverrides();
             gallery.querySelectorAll("li").forEach((item) => {
-                if (category === "all") {
-                    item.classList.remove("is-hidden");
+                const imageKey = getImageKey(item);
+                if (Object.prototype.hasOwnProperty.call(overrides, imageKey)) {
+                    setTools(item, overrides[imageKey]);
+                }
+            });
+        }
+
+        function applyDefaultTools() {
+            const overrides = loadToolOverrides();
+            gallery.querySelectorAll("li").forEach((item) => {
+                if (!itemHasSubFilterCategory(item)) {
                     return;
                 }
-                const categories = getCategories(item);
-                item.classList.toggle("is-hidden", !categories.includes(category));
+                const imageKey = getImageKey(item);
+                if (Object.prototype.hasOwnProperty.call(overrides, imageKey) || item.dataset.tools) {
+                    return;
+                }
+                const inferred = inferToolsFromItem(item);
+                if (inferred.length) {
+                    setTools(item, inferred);
+                }
             });
+        }
+
+        function itemMatchesFilter(item) {
+            if (activeFilter === "all") {
+                return true;
+            }
+
+            const itemCategories = getCategories(item);
+            if (!itemCategories.includes(activeFilter)) {
+                return false;
+            }
+
+            if (CATEGORY_SUB_FILTERS[activeFilter] && activeSubFilter !== "all") {
+                return getTools(item).includes(activeSubFilter);
+            }
+
+            return true;
+        }
+
+        function applyFilter(category) {
+            activeFilter = category;
+            if (!CATEGORY_SUB_FILTERS[category]) {
+                activeSubFilter = "all";
+            }
+            gallery.querySelectorAll("li").forEach((item) => {
+                item.classList.toggle("is-hidden", !itemMatchesFilter(item));
+            });
+            renderSubFilters();
         }
 
         function applyGalleryLayout(image) {
@@ -833,12 +1557,14 @@
             const isUploaded = item.dataset.uploaded === "true";
             categoryMenuDelete.hidden = !isUploaded;
 
-            categoryMenuForm.innerHTML = CATEGORIES.map(({ id, label }) => `
+            categoryMenuForm.innerHTML = categories.map(({ id, label }) => `
                 <label>
                     <input type="checkbox" name="category" value="${id}" ${selected.has(id) ? "checked" : ""}>
                     ${label}
                 </label>
             `).join("");
+
+            renderCategoryMenuSubfilters([...selected], getTools(item));
 
             categoryMenu.hidden = false;
             categoryMenu.style.left = "0px";
@@ -916,8 +1642,10 @@
                     src: image.getAttribute("src"),
                     alt: image.getAttribute("alt"),
                     categories: getCategories(item),
+                    tools: getTools(item),
                 });
                 saveOverride(imageKey, getCategories(item));
+                saveToolOverride(imageKey, getTools(item));
             }
 
             if (link?.href.startsWith("blob:")) {
@@ -993,9 +1721,11 @@
                     src: record.src,
                     alt: record.alt,
                     categories: record.categories,
+                    tools: record.tools || [],
                 });
                 gallery.prepend(item);
                 applyStoredCategories();
+                applyStoredTools();
                 applyFilter(activeFilter);
             }
 
@@ -1003,7 +1733,71 @@
             await updateHiddenArtworkUi();
         }
 
-        function buildHiddenArtworkCard({ key, type, uploadId, src, alt, meta }) {
+        function readHiddenArtworkForm(card) {
+            const alt = card.querySelector('input[name="alt"]').value.trim() || "Artwork";
+            const categories = [...card.querySelectorAll(".add-artwork__categories input:checked")]
+                .map((input) => input.value);
+            const selectedCategories = categories.length ? categories : ["other"];
+            const hasSubFilters = selectedCategories.some((categoryId) => CATEGORY_SUB_FILTERS[categoryId]);
+            const tools = hasSubFilters
+                ? [...card.querySelectorAll(".add-artwork__tools input:checked")].map((input) => input.value)
+                : [];
+            return {
+                alt,
+                categories: selectedCategories,
+                tools: pruneToolsForCategories(tools, selectedCategories),
+            };
+        }
+
+        function syncHiddenArtworkSubfilters(card) {
+            const selectedCategories = [...card.querySelectorAll(".add-artwork__categories input:checked")]
+                .map((input) => input.value);
+            const selectedTools = [...card.querySelectorAll('.add-artwork__tools input[name="tool"]:checked')]
+                .map((input) => input.value);
+            const fields = card.querySelector(".add-artwork__fields");
+            const actions = fields.querySelector(".gallery-actions");
+            fields.querySelectorAll(".add-artwork__tools[data-subfilter-category]").forEach((section) => section.remove());
+            actions.insertAdjacentHTML("beforebegin", renderSubFilterFormSections(selectedCategories, selectedTools));
+            card.querySelectorAll(".add-artwork__tools[data-subfilter-category]").forEach((section) => {
+                section.hidden = !selectedCategories.includes(section.dataset.subfilterCategory);
+            });
+        }
+
+        async function saveHiddenArtworkEdits(card) {
+            const { hiddenKey, hiddenType, uploadId } = card.dataset;
+            const formData = readHiddenArtworkForm(card);
+            const thumb = card.querySelector(".add-artwork__thumb");
+
+            if (hiddenType === "upload") {
+                const uploads = await readUploads();
+                const upload = uploads.find((entry) => entry.id === uploadId);
+                if (!upload) {
+                    return;
+                }
+                upload.alt = formData.alt;
+                upload.categories = formData.categories;
+                upload.tools = formData.tools;
+                await saveUpload(upload);
+            } else {
+                const records = loadHiddenRecords();
+                const record = records.find((entry) => entry.key === hiddenKey);
+                if (!record) {
+                    return;
+                }
+                record.alt = formData.alt;
+                record.categories = formData.categories;
+                record.tools = formData.tools;
+                saveHiddenRecords(records);
+                saveOverride(hiddenKey, formData.categories);
+                saveToolOverride(hiddenKey, formData.tools);
+            }
+
+            if (thumb) {
+                thumb.alt = formData.alt;
+            }
+        }
+
+        function buildHiddenArtworkCard({ key, type, uploadId, href, src, alt, categories, tools = [], meta }) {
             const item = document.createElement("div");
             item.className = "add-artwork__item hidden-artwork__item";
             item.dataset.hiddenKey = key;
@@ -1012,10 +1806,19 @@
                 item.dataset.uploadId = uploadId;
             }
             item.innerHTML = `
-                <img class="add-artwork__thumb" src="${src}" alt="${alt}">
+                <a class="hidden-artwork__thumb-link" href="${escapeAttr(href)}">
+                    <img class="add-artwork__thumb" src="${escapeAttr(src)}" alt="${escapeAttr(alt)}" loading="lazy">
+                </a>
                 <div class="add-artwork__fields">
-                    <p class="hidden-artwork__label">${alt}</p>
                     <p class="hidden-artwork__meta">${meta}</p>
+                    <label>
+                        Alt text
+                        <input type="text" name="alt" value="${escapeAttr(alt)}">
+                    </label>
+                    <div class="add-artwork__categories">
+                        ${renderCategoryCheckboxes(categories)}
+                    </div>
+                    ${renderSubFilterFormSections(categories, tools)}
                     <div class="gallery-actions">
                         <button type="button" data-action="show">Show in gallery</button>
                         <button type="button" data-action="delete" class="category-menu__delete">Delete permanently</button>
@@ -1047,8 +1850,11 @@
                         key: `uploaded:${upload.id}`,
                         type: "upload",
                         uploadId: upload.id,
+                        href: objectUrl,
                         src: objectUrl,
                         alt: upload.alt,
+                        categories: upload.categories,
+                        tools: upload.tools || [],
                         meta: "Added artwork hidden from gallery",
                     }));
                 });
@@ -1057,16 +1863,22 @@
                 hiddenArtworkList.appendChild(buildHiddenArtworkCard({
                     key: record.key,
                     type: "builtin",
+                    href: record.href,
                     src: record.src,
                     alt: record.alt,
+                    categories: record.categories,
+                    tools: record.tools || [],
                     meta: "Gallery image hidden in this browser",
                 }));
             });
         }
 
-        function createGalleryItem({ href, src, alt, categories, uploadId = null }) {
+        function createGalleryItem({ href, src, alt, categories, tools = [], uploadId = null }) {
             const item = document.createElement("li");
             item.dataset.categories = categories.join(" ");
+            if (tools.length) {
+                item.dataset.tools = tools.join(" ");
+            }
             if (uploadId) {
                 item.dataset.uploaded = "true";
                 item.dataset.uploadId = uploadId;
@@ -1096,6 +1908,7 @@
                     src: objectUrl,
                     alt: upload.alt,
                     categories: upload.categories,
+                    tools: upload.tools || [],
                     uploadId: upload.id,
                 });
                 gallery.prepend(item);
@@ -1107,7 +1920,7 @@
 
         function renderCategoryCheckboxes(selectedCategories = ["other"]) {
             const selected = new Set(selectedCategories);
-            return CATEGORIES.map(({ id, label }) => `
+            return categories.map(({ id, label }) => `
                 <label>
                     <input type="checkbox" value="${id}" ${selected.has(id) ? "checked" : ""}>
                     ${label}
@@ -1115,14 +1928,48 @@
             `).join("");
         }
 
+        function updatePendingUploadSubfilterVisibility(itemElement) {
+            const selectedCategories = [...itemElement.querySelectorAll(".add-artwork__categories input:checked")]
+                .map((input) => input.value);
+            itemElement.querySelectorAll(".add-artwork__tools[data-subfilter-category]").forEach((section) => {
+                const hasCategory = selectedCategories.includes(section.dataset.subfilterCategory);
+                if (hasCategory) {
+                    section.hidden = false;
+                    return;
+                }
+                section.hidden = true;
+                section.querySelectorAll('input[name="tool"]').forEach((input) => {
+                    input.checked = false;
+                });
+            });
+        }
+
+        function syncPendingUploadSubfilters(itemElement) {
+            const selectedCategories = [...itemElement.querySelectorAll(".add-artwork__categories input:checked")]
+                .map((input) => input.value);
+            const selectedTools = [...itemElement.querySelectorAll('.add-artwork__tools input[name="tool"]:checked')]
+                .map((input) => input.value);
+            const fields = itemElement.querySelector(".add-artwork__fields");
+            const actionsStart = fields.querySelector(".add-artwork__categories");
+            fields.querySelectorAll(".add-artwork__tools[data-subfilter-category]").forEach((section) => section.remove());
+            actionsStart.insertAdjacentHTML("afterend", renderSubFilterFormSections(selectedCategories, selectedTools));
+            updatePendingUploadSubfilterVisibility(itemElement);
+        }
+
         function readPendingUploadForm(itemElement) {
             const alt = itemElement.querySelector('input[name="alt"]').value.trim()
                 || filenameToAlt(itemElement.dataset.filename);
             const categories = [...itemElement.querySelectorAll('.add-artwork__categories input:checked')]
                 .map((input) => input.value);
+            const selectedCategories = categories.length ? categories : ["other"];
+            const hasSubFilters = selectedCategories.some((categoryId) => CATEGORY_SUB_FILTERS[categoryId]);
+            const tools = hasSubFilters
+                ? [...itemElement.querySelectorAll(".add-artwork__tools input:checked")].map((input) => input.value)
+                : [];
             return {
                 alt,
-                categories: categories.length ? categories : ["other"],
+                categories: selectedCategories,
+                tools: pruneToolsForCategories(tools, selectedCategories),
             };
         }
 
@@ -1170,8 +2017,9 @@
 
         function buildGallerySnippet(upload) {
             const categories = upload.categories.join(" ");
+            const toolsAttr = upload.tools?.length ? ` data-tools="${upload.tools.join(" ")}"` : "";
             const imagePath = `images/${upload.filename}`;
-            return `            <li data-categories="${categories}"><a href="${imagePath}"><img src="images/display/${upload.filename}" alt="${upload.alt}" loading="lazy"></a></li>`;
+            return `            <li data-categories="${categories}"${toolsAttr}><a href="${imagePath}"><img src="images/display/${upload.filename}" alt="${upload.alt}" loading="lazy"></a></li>`;
         }
 
         async function exportUploadedArtwork() {
@@ -1232,16 +2080,47 @@
 
             const selected = [...categoryMenuForm.querySelectorAll('input[name="category"]:checked')]
                 .map((input) => input.value);
-            const categories = selected.length ? selected : ["other"];
+            const selectedCategories = selected.length ? selected : ["other"];
 
-            setCategories(activeItem, categories);
-            saveOverride(getImageKey(activeItem), categories);
+            const prunedTools = pruneToolsForCategories(getTools(activeItem), selectedCategories);
+            setCategories(activeItem, selectedCategories);
+            setTools(activeItem, prunedTools);
+            saveOverride(getImageKey(activeItem), selectedCategories);
+            saveToolOverride(getImageKey(activeItem), prunedTools);
+            renderCategoryMenuSubfilters(selectedCategories, prunedTools);
 
             if (activeItem.dataset.uploadId) {
                 const uploads = await readUploads();
                 const upload = uploads.find((entry) => entry.id === activeItem.dataset.uploadId);
                 if (upload) {
-                    upload.categories = categories;
+                    upload.categories = selectedCategories;
+                    upload.tools = prunedTools;
+                    await saveUpload(upload);
+                }
+            }
+
+            applyFilter(activeFilter);
+        });
+
+        categoryMenuSubfilters.addEventListener("change", async (event) => {
+            if (!event.target.matches('input[name="tool"]') || !activeItem) {
+                return;
+            }
+
+            const selectedCategories = [...categoryMenuForm.querySelectorAll('input[name="category"]:checked')]
+                .map((input) => input.value);
+            const selectedTools = [...categoryMenuSubfilters.querySelectorAll('input[name="tool"]:checked')]
+                .map((input) => input.value);
+            const prunedTools = pruneToolsForCategories(selectedTools, selectedCategories);
+
+            setTools(activeItem, prunedTools);
+            saveToolOverride(getImageKey(activeItem), prunedTools);
+
+            if (activeItem.dataset.uploadId) {
+                const uploads = await readUploads();
+                const upload = uploads.find((entry) => entry.id === activeItem.dataset.uploadId);
+                if (upload) {
+                    upload.tools = prunedTools;
                     await saveUpload(upload);
                 }
             }
@@ -1270,23 +2149,42 @@
                 hideCategoryMenu();
                 addArtworkPanel.hidden = true;
                 hiddenArtworkPanel.hidden = true;
+                manageCategoriesPanel.hidden = true;
             }
         });
 
-        document.querySelectorAll(".filters button").forEach((button) => {
-            button.addEventListener("click", () => {
-                const category = button.dataset.filter;
-                document.querySelectorAll(".filters button").forEach((item) => {
-                    item.setAttribute("aria-pressed", item === button ? "true" : "false");
-                });
-                applyFilter(category);
+        filtersNav.addEventListener("click", (event) => {
+            const button = event.target.closest("button[data-filter]");
+            if (!button) {
+                return;
+            }
+            const category = button.dataset.filter;
+            filtersNav.querySelectorAll("button").forEach((item) => {
+                item.setAttribute("aria-pressed", item === button ? "true" : "false");
             });
+            if (!CATEGORY_SUB_FILTERS[category]) {
+                activeSubFilter = "all";
+            }
+            applyFilter(category);
+        });
+
+        subFiltersNav.addEventListener("click", (event) => {
+            const button = event.target.closest("button[data-sub-filter]");
+            if (!button) {
+                return;
+            }
+            activeSubFilter = button.dataset.subFilter;
+            subFiltersNav.querySelectorAll("button").forEach((item) => {
+                item.setAttribute("aria-pressed", item === button ? "true" : "false");
+            });
+            applyFilter(activeFilter);
         });
 
         document.getElementById("toggle-add-artwork").addEventListener("click", () => {
             addArtworkPanel.hidden = !addArtworkPanel.hidden;
             if (!addArtworkPanel.hidden) {
                 hiddenArtworkPanel.hidden = true;
+                manageCategoriesPanel.hidden = true;
             }
         });
 
@@ -1298,12 +2196,78 @@
             hiddenArtworkPanel.hidden = !hiddenArtworkPanel.hidden;
             if (!hiddenArtworkPanel.hidden) {
                 addArtworkPanel.hidden = true;
+                manageCategoriesPanel.hidden = true;
                 await renderHiddenGallery();
+            }
+        });
+
+        document.getElementById("toggle-manage-categories").addEventListener("click", () => {
+            manageCategoriesPanel.hidden = !manageCategoriesPanel.hidden;
+            if (!manageCategoriesPanel.hidden) {
+                addArtworkPanel.hidden = true;
+                hiddenArtworkPanel.hidden = true;
+                renderCategoryList();
+            }
+        });
+
+        document.getElementById("manage-categories-close").addEventListener("click", () => {
+            manageCategoriesPanel.hidden = true;
+        });
+
+        addCategoryForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const added = await addCategory(newCategoryLabelInput.value);
+            if (added) {
+                newCategoryLabelInput.value = "";
+            }
+        });
+
+        categoryList.addEventListener("click", async (event) => {
+            const button = event.target.closest("button[data-action]");
+            const row = event.target.closest(".category-list__item");
+            if (!button || !row) {
+                return;
+            }
+
+            const categoryId = row.dataset.categoryId;
+            const labelInput = row.querySelector(".category-list__label");
+
+            if (button.dataset.action === "save") {
+                await renameCategory(categoryId, labelInput.value);
+                return;
+            }
+
+            if (button.dataset.action === "delete") {
+                await deleteCategory(categoryId);
             }
         });
 
         document.getElementById("hidden-artwork-close").addEventListener("click", () => {
             hiddenArtworkPanel.hidden = true;
+        });
+
+        hiddenArtworkList.addEventListener("input", async (event) => {
+            if (!event.target.matches('input[name="alt"]')) {
+                return;
+            }
+            const card = event.target.closest(".hidden-artwork__item");
+            if (card) {
+                await saveHiddenArtworkEdits(card);
+            }
+        });
+
+        hiddenArtworkList.addEventListener("change", async (event) => {
+            if (!event.target.matches(".add-artwork__categories input, .add-artwork__tools input")) {
+                return;
+            }
+            const card = event.target.closest(".hidden-artwork__item");
+            if (!card) {
+                return;
+            }
+            if (event.target.matches(".add-artwork__categories input")) {
+                syncHiddenArtworkSubfilters(card);
+            }
+            await saveHiddenArtworkEdits(card);
         });
 
         hiddenArtworkList.addEventListener("click", async (event) => {
@@ -1320,6 +2284,7 @@
             };
 
             if (button.dataset.action === "show") {
+                await saveHiddenArtworkEdits(card);
                 await restoreHiddenItem(payload);
                 return;
             }
@@ -1347,6 +2312,16 @@
 
         addArtworkClear.addEventListener("click", clearPendingUploads);
 
+        addArtworkPreview.addEventListener("change", (event) => {
+            if (!event.target.matches(".add-artwork__categories input")) {
+                return;
+            }
+            const item = event.target.closest(".add-artwork__item");
+            if (item) {
+                syncPendingUploadSubfilters(item);
+            }
+        });
+
         addArtworkSubmit.addEventListener("click", async () => {
             const previewItems = [...addArtworkPreview.querySelectorAll(".add-artwork__item")];
             for (let index = 0; index < previewItems.length; index += 1) {
@@ -1357,6 +2332,7 @@
                     filename: file.name,
                     alt: formData.alt,
                     categories: formData.categories,
+                    tools: formData.tools,
                     blob: file,
                     addedAt: Date.now(),
                 };
@@ -1367,13 +2343,21 @@
             const uploads = await readUploads();
             renderUploadedItems(uploads);
             applyStoredCategories();
+            applyStoredTools();
             applyFilter(activeFilter);
             addArtworkPanel.hidden = true;
         });
 
         exportUploadsButton.addEventListener("click", exportUploadedArtwork);
 
+        categories = loadCategories();
+        mergeDiscoveredCategories();
+        renderFilters();
+
         applyHiddenItems();
+        applyStoredCategories();
+        applyStoredTools();
+        applyDefaultTools();
         initGalleryLayout();
         updateHiddenArtworkUi();
 
@@ -1381,11 +2365,11 @@
             .then(async (uploads) => {
                 renderUploadedItems(uploads);
                 applyStoredCategories();
+                applyStoredTools();
                 applyFilter("all");
                 await updateHiddenArtworkUi();
             })
             .catch(() => {
-                applyStoredCategories();
                 applyFilter("all");
             });
     </script>
