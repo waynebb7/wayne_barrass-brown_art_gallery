@@ -16,9 +16,36 @@ Then visit [http://localhost:8000](http://localhost:8000).
 
 ## Live site
 
-This project can be published with [GitHub Pages](https://pages.github.com/) by enabling Pages for the `main` branch in the repository settings. Once enabled, the site will be available at:
+**https://waynebb7.github.io/wayne_barrass-brown_art_gallery/**
+
+## Deploy with GitHub Pages
+
+This repo includes a GitHub Actions workflow (`.github/workflows/pages.yml`) that publishes the site on every push to `main`.
+
+### One-time setup
+
+1. Open the repository on GitHub: [github.com/waynebb7/wayne_barrass-brown_art_gallery](https://github.com/waynebb7/wayne_barrass-brown_art_gallery)
+2. Go to **Settings** → **Pages**
+3. Under **Build and deployment**, set **Source** to **GitHub Actions**
+4. Push the workflow to `main` (if it is not there yet)
+
+### Publish updates
+
+After setup, each push to `main` deploys automatically. You can also run the workflow manually from the **Actions** tab → **Deploy to GitHub Pages** → **Run workflow**.
+
+To deploy from your machine:
+
+```powershell
+git add .
+git commit -m "Your message"
+git push origin main
+```
+
+The live URL will be:
 
 `https://waynebb7.github.io/wayne_barrass-brown_art_gallery/`
+
+It can take 1–2 minutes after a push for changes to appear.
 
 ## Adding new artwork
 
