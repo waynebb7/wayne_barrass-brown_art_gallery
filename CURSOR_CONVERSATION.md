@@ -4,7 +4,8 @@
 
 **Repository:** `d:\git\wayne_barrass-brown_art_gallery`  
 **Live site:** https://waynebb7.github.io/wayne_barrass-brown_art_gallery/  
-**Transcript reference:** [f8a3e0ac-24c0-4150-bea5-2e55f6a851f3](f8a3e0ac-24c0-4150-bea5-2e55f6a851f3)
+**Transcript reference:** [f8a3e0ac-24c0-4150-bea5-2e55f6a851f3](f8a3e0ac-24c0-4150-bea5-2e55f6a851f3)  
+**Full transcript file:** `CURSOR_CONVERSATION_TRANSCRIPT.md` (ChatGPT export format, 102 merged messages)
 
 ---
 
