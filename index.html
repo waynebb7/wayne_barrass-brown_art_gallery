@@ -8,11 +8,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- <meta name="description" content="A description of this site that will show up in the search engine results."> -->
     <!-- <meta name="application-name" content="Filament Group"> -->
     <!-- <meta name="msapplication-TileImage" content="/images/icons/mstile-144x144.png"> -->
-    <!-- <meta name="theme-color" content="#247200"> -->
+    <meta name="theme-color" content="#162033">
     <!-- <link rel="manifest" href="/webappmanifest.json"> -->
     <!-- <link href="main.css" rel="stylesheet"> -->
     <!-- <link rel="icon" href="favicon.ico"> -->
@@ -20,195 +20,1375 @@
     <!-- <script src="my-javascript-file.js"></script> -->
 
     <style>
+        :root {
+            --bg: #f3f5f8;
+            --surface: #ffffff;
+            --border: #d7dde5;
+            --text: #162033;
+            --text-muted: #5c6778;
+            --accent: #0f4c81;
+            --accent-soft: #e8f1fa;
+            --navy: #162033;
+            --shadow: 0 1px 2px rgba(22, 32, 51, 0.06), 0 8px 24px rgba(22, 32, 51, 0.06);
+            --shadow-hover: 0 10px 28px rgba(22, 32, 51, 0.1);
+            --radius-lg: 1rem;
+            --radius-md: 0.7rem;
+            --radius-pill: 999px;
+            --gallery-gap: 0.85rem;
+        }
+
         * {
             box-sizing: border-box;
         }
 
         html {
-            font-family: 'Poppins', sans-serif;
-            font-size: 18px;
+            font-family: "Poppins", sans-serif;
+            font-size: clamp(16px, 1.5vw, 18px);
+            color: var(--text);
+            scroll-behavior: smooth;
         }
 
         body {
             margin: 0;
+            min-height: 100vh;
+            background: var(--bg);
         }
 
         main {
-            max-width: 720px;
+            width: min(1180px, 100%);
             margin: 0 auto;
-            padding: 1rem;
+            padding: clamp(1rem, 3vw, 2rem);
         }
 
-        header {
-            margin-bottom: 2rem;
-        }
-
-        h1 {
-            font-size: 2rem;
+        .site-header {
+            margin-bottom: 1.25rem;
+            padding: clamp(1.5rem, 4vw, 2.25rem);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius-lg);
             color: #fff;
-            margin: 0;
-            padding: 0.75em 0.25em;
-            background: #2c2c2c;
-            line-height: 1.1em;
+            background: linear-gradient(180deg, #1b2a41 0%, var(--navy) 100%);
+            box-shadow: var(--shadow);
+            border-bottom: 3px solid var(--accent);
         }
 
-        ul {
-            padding: 0;
+        .site-header__eyebrow {
+            margin: 0 0 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.72);
+        }
+
+        .site-header h1 {
             margin: 0;
+            font-size: clamp(1.85rem, 5vw, 2.75rem);
+            line-height: 1.1;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .site-header__tagline {
+            margin: 0.65rem 0 0;
+            max-width: 36rem;
+            font-size: clamp(0.95rem, 2.2vw, 1.05rem);
+            line-height: 1.55;
+            color: rgba(255, 255, 255, 0.78);
+        }
+
+        .gallery-actions,
+        .add-artwork__actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.65rem;
+        }
+
+        .gallery-actions {
+            margin-bottom: 1rem;
+        }
+
+        button {
+            font-family: inherit;
+            font-size: 0.88rem;
+            font-weight: 500;
+            min-height: 2.6rem;
+            padding: 0.5rem 0.95rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-pill);
+            background: var(--surface);
+            color: var(--text);
+            cursor: pointer;
+            transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+        }
+
+        button:hover {
+            border-color: #b8c3d1;
+            background: #f8fafc;
+        }
+
+        button:focus-visible {
+            outline: 3px solid rgba(15, 76, 129, 0.28);
+            outline-offset: 2px;
+        }
+
+        #toggle-add-artwork {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+
+        #toggle-add-artwork:hover {
+            background: #0c3f6b;
+            border-color: #0c3f6b;
+        }
+
+        .add-artwork {
+            margin-bottom: 1.25rem;
+            padding: clamp(1rem, 3vw, 1.25rem);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            background: var(--surface);
+            box-shadow: var(--shadow);
+        }
+
+        .add-artwork[hidden] {
+            display: none;
+        }
+
+        .add-artwork h2 {
+            margin: 0 0 0.75rem;
+            font-size: 1.15rem;
+        }
+
+        .add-artwork__hint {
+            margin: 0 0 1rem;
+            font-size: 0.92rem;
+            line-height: 1.5;
+            color: var(--text-muted);
+        }
+
+        .add-artwork__preview {
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
+            gap: 1rem;
+            margin: 1rem 0;
         }
 
-        li {
-            list-style-type: none;
+        .add-artwork__item {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 1rem;
+            padding: 0.9rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background: var(--surface);
         }
 
-        li a {
-            display: block;
-        }
-
-        img {
+        .add-artwork__thumb {
             width: 100%;
             height: auto;
             display: block;
-            border: 1px solid black;
-            box-shadow: 1px 3px 8px rgba(0, 0, 0, 0.5);
+            border-radius: var(--radius-md);
+        }
+
+        .add-artwork__fields label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .add-artwork__fields input[type="text"] {
+            width: 100%;
+            font-family: inherit;
+            font-size: 0.95rem;
+            padding: 0.55rem 0.7rem;
+            margin-top: 0.25rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background: #fff;
+        }
+
+        .add-artwork__categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .add-artwork__categories label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            margin: 0;
+            color: var(--text);
+        }
+
+        .toolbar {
+            position: sticky;
+            top: 0.75rem;
+            z-index: 20;
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            background: rgba(255, 255, 255, 0.94);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow);
+        }
+
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.55rem;
+        }
+
+        .filters button {
+            background: #fff;
+            color: var(--text-muted);
+        }
+
+        .filters button[aria-pressed="true"] {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+
+        #gallery {
+            padding: 0;
+            margin: 0;
+            column-gap: var(--gallery-gap);
+            column-count: 3;
+        }
+
+        #gallery li {
+            list-style: none;
+            display: inline-block;
+            width: 100%;
+            margin: 0 0 var(--gallery-gap);
+            break-inside: avoid;
+            animation: fade-up 0.35s ease both;
+        }
+
+        #gallery li.gallery-item--wide {
+            column-span: all;
+        }
+
+        #gallery li a {
+            display: block;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background: var(--surface);
+            box-shadow: var(--shadow);
+            transition: border-color 0.18s ease, box-shadow 0.18s ease;
+        }
+
+        #gallery li a:hover {
+            border-color: #b8c3d1;
+            box-shadow: var(--shadow-hover);
+        }
+
+        #gallery img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border: 0;
+        }
+
+        #gallery li.is-hidden {
+            display: none;
+        }
+
+        #gallery li[data-uploaded="true"] a {
+            outline: 2px dashed var(--accent);
+            outline-offset: 2px;
+        }
+
+        .category-menu {
+            position: fixed;
+            z-index: 1000;
+            min-width: 11rem;
+            padding: 0.5rem 0;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background: var(--surface);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .category-menu[hidden] {
+            display: none;
+        }
+
+        .category-menu__title {
+            margin: 0;
+            padding: 0.45rem 0.85rem 0.55rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .category-menu label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.45rem 0.85rem;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .category-menu label:hover {
+            background: var(--accent-soft);
+        }
+
+        .category-menu__actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+            border-top: 1px solid var(--border);
+            padding: 0.45rem 0.5rem 0.5rem;
+        }
+
+        .category-menu__hide,
+        .category-menu__delete {
+            width: 100%;
+            min-height: 2.25rem;
+            font-size: 0.85rem;
+            color: #b42318;
+            border-color: #fecdca;
+            background: #fff;
+            box-shadow: none;
+        }
+
+        .category-menu__delete:hover {
+            background: #fef3f2;
+            border-color: #fda29b;
+        }
+
+        .category-menu__hide {
+            color: var(--text);
+            border-color: var(--border);
+            background: #fff;
+        }
+
+        .category-menu__hide:hover {
+            background: #f8fafc;
+            border-color: #b8c3d1;
+        }
+
+        .hidden-artwork__label {
+            margin: 0 0 0.65rem;
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+
+        .hidden-artwork__meta {
+            margin: 0 0 0.65rem;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        @keyframes fade-up {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 900px) {
+            #gallery {
+                column-count: 2;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .toolbar {
+                top: 0.5rem;
+                padding: 0.75rem;
+            }
+
+            #gallery {
+                column-count: 1;
+            }
+
+            .filters {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                padding-bottom: 0.15rem;
+                scrollbar-width: thin;
+            }
+
+            .filters button {
+                flex: 0 0 auto;
+            }
+
+            .add-artwork__item {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
     </style>
-
-    <script>
-
-    </script>
 </head>
 
 <body>
     <main>
-        <header>
-            <h1>Wayne Barrass-Brown<br><br>Things I made and doodled</h1>
+        <header class="site-header">
+            <p class="site-header__eyebrow">Art Gallery</p>
+            <h1>Wayne Barrass-Brown</h1>
+            <p class="site-header__tagline">Things I made and doodled</p>
         </header>
-        <ul>
-            <li><a href="images/Cat painted on wall.jpeg"><img src="images/display/Cat painted on wall.jpeg" alt="Cat painted on wall" loading="lazy"></a></li>
-            <li><a href="images/FB_IMG_1433388629967 2.jpg"><img src="images/display/FB_IMG_1433388629967 2.jpg" alt="Artwork photograph" loading="lazy"></a></li>
-            <li><a href="images/Cat painted on wall_0002.jpeg"><img src="images/display/Cat painted on wall_0002.jpeg" alt="Cat painted on wall" loading="lazy"></a></li>
-            <li><a href="images/Pumpkin Carving_0001.jpeg"><img src="images/display/Pumpkin Carving_0001.jpeg" alt="Pumpkin Carving" loading="lazy"></a></li>
-            <li><a href="images/Lampheads.jpeg"><img src="images/display/Lampheads.jpeg" alt="Lampheads" loading="lazy"></a></li>
-            <li><a href="images/Fist on ipad Procreate.jpeg"><img src="images/display/Fist on ipad Procreate.jpeg" alt="Fist on ipad Procreate" loading="lazy"></a></li>
-            <li><a href="images/Light and Shade on ipad Procreate_0002.jpeg"><img src="images/display/Light and Shade on ipad Procreate_0002.jpeg" alt="Light and Shade on ipad Procreate" loading="lazy"></a></li>
-            <li><a href="images/FB_IMG_1433388644687.jpg"><img src="images/display/FB_IMG_1433388644687.jpg" alt="Artwork photograph" loading="lazy"></a></li>
-            <li><a href="images/RedLips1.png"><img src="images/display/RedLips1.png" alt="Red lips study" loading="lazy"></a></li>
-            <li><a href="images/Light and Shade on ipad Procreate.jpeg"><img src="images/display/Light and Shade on ipad Procreate.jpeg" alt="Light and Shade on ipad Procreate" loading="lazy"></a></li>
-            <li><a href="images/Manga Girls_0003.jpeg"><img src="images/display/Manga Girls_0003.jpeg" alt="Manga Girls" loading="lazy"></a></li>
-            <li><a href="images/Manga and Anime Montage.png"><img src="images/display/Manga and Anime Montage.png" alt="Manga and Anime Montage" loading="lazy"></a></li>
-            <li><a href="images/20150801_083226.jpg"><img src="images/display/20150801_083226.jpg" alt="Artwork photograph" loading="lazy"></a></li>
-            <li><a href="images/Manga Sadness_0002.jpeg"><img src="images/display/Manga Sadness_0002.jpeg" alt="Manga Sadness" loading="lazy"></a></li>
-            <li><a href="images/manga9.png"><img src="images/display/manga9.png" alt="Manga artwork" loading="lazy"></a></li>
-            <li><a href="images/DSC_2618.jpg"><img src="images/display/DSC_2618.jpg" alt="Photograph 2618" loading="lazy"></a></li>
-            <li><a href="images/Niffler pencil drawing.jpeg"><img src="images/display/Niffler pencil drawing.jpeg" alt="Niffler pencil drawing" loading="lazy"></a></li>
-            <li><a href="images/Pumpkin Carving - Spiders.jpeg"><img src="images/display/Pumpkin Carving - Spiders.jpeg" alt="Pumpkin Carving - Spiders" loading="lazy"></a></li>
-            <li><a href="images/pumpkin_carving___ghostbusters.jpg"><img src="images/display/pumpkin_carving___ghostbusters.jpg" alt="pumpkin carving ghostbusters" loading="lazy"></a></li>
-            <li><a href="images/Hamster_0001.png"><img src="images/display/Hamster_0001.png" alt="Hamster" loading="lazy"></a></li>
-            <li><a href="images/The Occamy on ipad Procreate.jpeg"><img src="images/display/The Occamy on ipad Procreate.jpeg" alt="The Occamy on ipad Procreate" loading="lazy"></a></li>
-            <li><a href="images/Abstract 01.jpg"><img src="images/display/Abstract 01.jpg" alt="Abstract 01" loading="lazy"></a></li>
-            <li><a href="images/Red Lips2.png"><img src="images/display/Red Lips2.png" alt="Red Lips2" loading="lazy"></a></li>
-            <li><a href="images/20150725_080759.jpg"><img src="images/display/20150725_080759.jpg" alt="Artwork photograph" loading="lazy"></a></li>
-            <li><a href="images/IMG_0067.jpg"><img src="images/display/IMG_0067.jpg" alt="IMG" loading="lazy"></a></li>
-            <li><a href="images/Comedy Sketches.jpg"><img src="images/display/Comedy Sketches.jpg" alt="Comedy Sketches" loading="lazy"></a></li>
-            <li><a href="images/Christmas Wreath.jpeg"><img src="images/display/Christmas Wreath.jpeg" alt="Christmas Wreath" loading="lazy"></a></li>
-            <li><a href="images/DSC_2456.jpg"><img src="images/display/DSC_2456.jpg" alt="Photograph 2456" loading="lazy"></a></li>
-            <li><a href="images/20150801_083508.jpg"><img src="images/display/20150801_083508.jpg" alt="Artwork photograph" loading="lazy"></a></li>
-            <li><a href="images/Captain America Shield Acrylic Painting.jpg"><img src="images/display/Captain America Shield Acrylic Painting.jpg" alt="Captain America Shield Acrylic Painting" loading="lazy"></a></li>
-            <li><a href="images/Dragon with biro.jpg"><img src="images/display/Dragon with biro.jpg" alt="Dragon with biro" loading="lazy"></a></li>
-            <li><a href="images/Eyes.jpg"><img src="images/display/Eyes.jpg" alt="Eyes" loading="lazy"></a></li>
-            <li><a href="images/Female Torso.jpg"><img src="images/display/Female Torso.jpg" alt="Female Torso" loading="lazy"></a></li>
-            <li><a href="images/file.png"><img src="images/display/file.png" alt="Artwork sketch" loading="lazy"></a></li>
-            <li><a href="images/file3.png"><img src="images/display/file3.png" alt="Artwork sketch" loading="lazy"></a></li>
-            <li><a href="images/20150801_083317.jpg"><img src="images/display/20150801_083317.jpg" alt="Artwork photograph" loading="lazy"></a></li>
-            <li><a href="images/Left Eye - Procreate Software Test.jpg"><img src="images/display/Left Eye - Procreate Software Test.jpg" alt="Left Eye - Procreate Software Test" loading="lazy"></a></li>
-            <li><a href="images/Original Ironman Pencil Drawing.jpg"><img src="images/display/Original Ironman Pencil Drawing.jpg" alt="Original Ironman Pencil Drawing" loading="lazy"></a></li>
-            <li><a href="images/Rocks.jpg"><img src="images/display/Rocks.jpg" alt="Rocks" loading="lazy"></a></li>
-            <li><a href="images/DSC_2599.jpg"><img src="images/display/DSC_2599.jpg" alt="Photograph 2599" loading="lazy"></a></li>
-            <li><a href="images/Manga Girl.jpg"><img src="images/display/Manga Girl.jpg" alt="Manga Girl" loading="lazy"></a></li>
-            <li><a href="images/Reflection.jpg"><img src="images/display/Reflection.jpg" alt="Reflection" loading="lazy"></a></li>
-            <li><a href="images/Scanned-image-1-0.jpg"><img src="images/display/Scanned-image-1-0.jpg" alt="Scanned sketch 1" loading="lazy"></a></li>
-            <li><a href="images/Scanned-image-22-0.jpg"><img src="images/display/Scanned-image-22-0.jpg" alt="Scanned sketch 22" loading="lazy"></a></li>
-            <li><a href="images/Scanned-image-23-0.jpg"><img src="images/display/Scanned-image-23-0.jpg" alt="Scanned sketch 23" loading="lazy"></a></li>
-            <li><a href="images/Scanned-image-24-0.jpg"><img src="images/display/Scanned-image-24-0.jpg" alt="Scanned sketch 24" loading="lazy"></a></li>
-            <li><a href="images/20150801_083235.jpg"><img src="images/display/20150801_083235.jpg" alt="Artwork photograph" loading="lazy"></a></li>
-            <li><a href="images/Scanned-image-26-0.jpg"><img src="images/display/Scanned-image-26-0.jpg" alt="Scanned sketch 26" loading="lazy"></a></li>
-            <li><a href="images/Scanned-image-6-0.jpg"><img src="images/display/Scanned-image-6-0.jpg" alt="Scanned sketch 6" loading="lazy"></a></li>
-            <li><a href="images/Scanned-image-27-0.jpg"><img src="images/display/Scanned-image-27-0.jpg" alt="Scanned sketch 27" loading="lazy"></a></li>
-            <li><a href="images/Scanned-image-29-0.jpg"><img src="images/display/Scanned-image-29-0.jpg" alt="Scanned sketch 29" loading="lazy"></a></li>
-            <li><a href="images/Scanned-image-30-0.jpg"><img src="images/display/Scanned-image-30-0.jpg" alt="Scanned sketch 30" loading="lazy"></a></li>
-            <li><a href="images/Scanned-image-5-0.jpg"><img src="images/display/Scanned-image-5-0.jpg" alt="Scanned sketch 5" loading="lazy"></a></li>
-            <li><a href="images/Scanned-image-12-0.jpg"><img src="images/display/Scanned-image-12-0.jpg" alt="Scanned sketch 12" loading="lazy"></a></li>
-            <li><a href="images/Sphere.jpg"><img src="images/display/Sphere.jpg" alt="Sphere" loading="lazy"></a></li>
-            <li><a href="images/Eye.jpg"><img src="images/display/Eye.jpg" alt="Eye" loading="lazy"></a></li>
+        <div class="gallery-actions">
+            <button type="button" id="toggle-add-artwork">Add artwork</button>
+            <button type="button" id="toggle-hidden-artwork" hidden>Hidden artwork</button>
+            <button type="button" id="export-uploads" hidden>Export added artwork</button>
+        </div>
+        <section id="add-artwork" class="add-artwork" hidden>
+            <h2>Add artwork</h2>
+            <p class="add-artwork__hint">
+                Choose images to preview them here, set alt text and categories, then add them to the gallery.
+                New pieces are saved in this browser until you export them into the project folder.
+            </p>
+            <input type="file" id="add-artwork-files" accept="image/*" multiple>
+            <div id="add-artwork-preview" class="add-artwork__preview"></div>
+            <div class="add-artwork__actions">
+                <button type="button" id="add-artwork-submit" disabled>Add to gallery</button>
+                <button type="button" id="add-artwork-clear" disabled>Clear selection</button>
+                <button type="button" id="add-artwork-close">Close</button>
+            </div>
+        </section>
+        <section id="hidden-artwork" class="add-artwork" hidden>
+            <h2>Hidden artwork</h2>
+            <p class="add-artwork__hint">
+                Images hidden from the main gallery are stored here in this browser.
+                Show them again in the gallery, or delete them permanently.
+            </p>
+            <div id="hidden-artwork-list" class="add-artwork__preview"></div>
+            <div class="add-artwork__actions">
+                <button type="button" id="hidden-artwork-close">Close</button>
+            </div>
+        </section>
+        <div class="toolbar">
+            <nav class="filters" aria-label="Filter artwork by category">
+                <button type="button" data-filter="all" aria-pressed="true">All</button>
+                <button type="button" data-filter="digital" aria-pressed="false">Digital</button>
+                <button type="button" data-filter="manga" aria-pressed="false">Manga</button>
+                <button type="button" data-filter="pumpkins" aria-pressed="false">Pumpkins</button>
+                <button type="button" data-filter="sketches" aria-pressed="false">Sketches</button>
+                <button type="button" data-filter="figures" aria-pressed="false">Figures</button>
+                <button type="button" data-filter="painting" aria-pressed="false">Painting</button>
+                <button type="button" data-filter="photos" aria-pressed="false">Photos</button>
+                <button type="button" data-filter="other" aria-pressed="false">Other</button>
+            </nav>
+        </div>
+        <ul id="gallery">
+            <li data-categories="painting"><a href="images/Cat painted on wall.jpeg"><img src="images/display/Cat painted on wall.jpeg" alt="Cat painted on wall" loading="lazy"></a></li>
+            <li data-categories="photos"><a href="images/FB_IMG_1433388629967 2.jpg"><img src="images/display/FB_IMG_1433388629967 2.jpg" alt="Artwork photograph" loading="lazy"></a></li>
+            <li data-categories="painting"><a href="images/Cat painted on wall_0002.jpeg"><img src="images/display/Cat painted on wall_0002.jpeg" alt="Cat painted on wall" loading="lazy"></a></li>
+            <li data-categories="pumpkins"><a href="images/Pumpkin Carving_0001.jpeg"><img src="images/display/Pumpkin Carving_0001.jpeg" alt="Pumpkin Carving" loading="lazy"></a></li>
+            <li data-categories="figures"><a href="images/Lampheads.jpeg"><img src="images/display/Lampheads.jpeg" alt="Lampheads" loading="lazy"></a></li>
+            <li data-categories="digital figures"><a href="images/Fist on ipad Procreate.jpeg"><img src="images/display/Fist on ipad Procreate.jpeg" alt="Fist on ipad Procreate" loading="lazy"></a></li>
+            <li data-categories="digital"><a href="images/Light and Shade on ipad Procreate_0002.jpeg"><img src="images/display/Light and Shade on ipad Procreate_0002.jpeg" alt="Light and Shade on ipad Procreate" loading="lazy"></a></li>
+            <li data-categories="photos"><a href="images/FB_IMG_1433388644687.jpg"><img src="images/display/FB_IMG_1433388644687.jpg" alt="Artwork photograph" loading="lazy"></a></li>
+            <li data-categories="figures"><a href="images/RedLips1.png"><img src="images/display/RedLips1.png" alt="Red lips study" loading="lazy"></a></li>
+            <li data-categories="digital"><a href="images/Light and Shade on ipad Procreate.jpeg"><img src="images/display/Light and Shade on ipad Procreate.jpeg" alt="Light and Shade on ipad Procreate" loading="lazy"></a></li>
+            <li data-categories="manga"><a href="images/Manga Girls_0003.jpeg"><img src="images/display/Manga Girls_0003.jpeg" alt="Manga Girls" loading="lazy"></a></li>
+            <li data-categories="manga"><a href="images/Manga and Anime Montage.png"><img src="images/display/Manga and Anime Montage.png" alt="Manga and Anime Montage" loading="lazy"></a></li>
+            <li data-categories="photos"><a href="images/20150801_083226.jpg"><img src="images/display/20150801_083226.jpg" alt="Artwork photograph" loading="lazy"></a></li>
+            <li data-categories="manga"><a href="images/Manga Sadness_0002.jpeg"><img src="images/display/Manga Sadness_0002.jpeg" alt="Manga Sadness" loading="lazy"></a></li>
+            <li data-categories="manga"><a href="images/manga9.png"><img src="images/display/manga9.png" alt="Manga artwork" loading="lazy"></a></li>
+            <li data-categories="photos"><a href="images/DSC_2618.jpg"><img src="images/display/DSC_2618.jpg" alt="Photograph 2618" loading="lazy"></a></li>
+            <li data-categories="manga sketches"><a href="images/Niffler pencil drawing.jpeg"><img src="images/display/Niffler pencil drawing.jpeg" alt="Niffler pencil drawing" loading="lazy"></a></li>
+            <li data-categories="pumpkins"><a href="images/Pumpkin Carving - Spiders.jpeg"><img src="images/display/Pumpkin Carving - Spiders.jpeg" alt="Pumpkin Carving - Spiders" loading="lazy"></a></li>
+            <li data-categories="pumpkins"><a href="images/pumpkin_carving___ghostbusters.jpg"><img src="images/display/pumpkin_carving___ghostbusters.jpg" alt="pumpkin carving ghostbusters" loading="lazy"></a></li>
+            <li data-categories="manga"><a href="images/Hamster_0001.png"><img src="images/display/Hamster_0001.png" alt="Hamster" loading="lazy"></a></li>
+            <li data-categories="digital manga"><a href="images/The Occamy on ipad Procreate.jpeg"><img src="images/display/The Occamy on ipad Procreate.jpeg" alt="The Occamy on ipad Procreate" loading="lazy"></a></li>
+            <li data-categories="other"><a href="images/Abstract 01.jpg"><img src="images/display/Abstract 01.jpg" alt="Abstract 01" loading="lazy"></a></li>
+            <li data-categories="figures"><a href="images/Red Lips2.png"><img src="images/display/Red Lips2.png" alt="Red Lips2" loading="lazy"></a></li>
+            <li data-categories="photos"><a href="images/20150725_080759.jpg"><img src="images/display/20150725_080759.jpg" alt="Artwork photograph" loading="lazy"></a></li>
+            <li data-categories="photos"><a href="images/IMG_0067.jpg"><img src="images/display/IMG_0067.jpg" alt="IMG" loading="lazy"></a></li>
+            <li data-categories="sketches"><a href="images/Comedy Sketches.jpg"><img src="images/display/Comedy Sketches.jpg" alt="Comedy Sketches" loading="lazy"></a></li>
+            <li data-categories="other"><a href="images/Christmas Wreath.jpeg"><img src="images/display/Christmas Wreath.jpeg" alt="Christmas Wreath" loading="lazy"></a></li>
+            <li data-categories="photos"><a href="images/DSC_2456.jpg"><img src="images/display/DSC_2456.jpg" alt="Photograph 2456" loading="lazy"></a></li>
+            <li data-categories="photos"><a href="images/20150801_083508.jpg"><img src="images/display/20150801_083508.jpg" alt="Artwork photograph" loading="lazy"></a></li>
+            <li data-categories="manga painting"><a href="images/Captain America Shield Acrylic Painting.jpg"><img src="images/display/Captain America Shield Acrylic Painting.jpg" alt="Captain America Shield Acrylic Painting" loading="lazy"></a></li>
+            <li data-categories="sketches"><a href="images/Dragon with biro.jpg"><img src="images/display/Dragon with biro.jpg" alt="Dragon with biro" loading="lazy"></a></li>
+            <li data-categories="figures"><a href="images/Eyes.jpg"><img src="images/display/Eyes.jpg" alt="Eyes" loading="lazy"></a></li>
+            <li data-categories="figures"><a href="images/Female Torso.jpg"><img src="images/display/Female Torso.jpg" alt="Female Torso" loading="lazy"></a></li>
+            <li data-categories="manga sketches"><a href="images/manga-cat-girl-line-art.png"><img src="images/display/manga-cat-girl-line-art.png" alt="Manga cat girl line art" loading="lazy"></a></li>
+            <li data-categories="manga sketches"><a href="images/fox-creature-line-art.png"><img src="images/display/fox-creature-line-art.png" alt="Fox creature line art" loading="lazy"></a></li>
+            <li data-categories="photos"><a href="images/20150801_083317.jpg"><img src="images/display/20150801_083317.jpg" alt="Artwork photograph" loading="lazy"></a></li>
+            <li data-categories="digital figures"><a href="images/Left Eye - Procreate Software Test.jpg"><img src="images/display/Left Eye - Procreate Software Test.jpg" alt="Left Eye - Procreate Software Test" loading="lazy"></a></li>
+            <li data-categories="manga sketches"><a href="images/Original Ironman Pencil Drawing.jpg"><img src="images/display/Original Ironman Pencil Drawing.jpg" alt="Original Ironman Pencil Drawing" loading="lazy"></a></li>
+            <li data-categories="other"><a href="images/Rocks.jpg"><img src="images/display/Rocks.jpg" alt="Rocks" loading="lazy"></a></li>
+            <li data-categories="photos"><a href="images/DSC_2599.jpg"><img src="images/display/DSC_2599.jpg" alt="Photograph 2599" loading="lazy"></a></li>
+            <li data-categories="manga"><a href="images/Manga Girl.jpg"><img src="images/display/Manga Girl.jpg" alt="Manga Girl" loading="lazy"></a></li>
+            <li data-categories="figures"><a href="images/Reflection.jpg"><img src="images/display/Reflection.jpg" alt="Reflection" loading="lazy"></a></li>
+            <li data-categories="sketches"><a href="images/Scanned-image-1-0.jpg"><img src="images/display/Scanned-image-1-0.jpg" alt="Scanned sketch 1" loading="lazy"></a></li>
+            <li data-categories="sketches"><a href="images/Scanned-image-22-0.jpg"><img src="images/display/Scanned-image-22-0.jpg" alt="Scanned sketch 22" loading="lazy"></a></li>
+            <li data-categories="sketches"><a href="images/Scanned-image-23-0.jpg"><img src="images/display/Scanned-image-23-0.jpg" alt="Scanned sketch 23" loading="lazy"></a></li>
+            <li data-categories="sketches"><a href="images/Scanned-image-24-0.jpg"><img src="images/display/Scanned-image-24-0.jpg" alt="Scanned sketch 24" loading="lazy"></a></li>
+            <li data-categories="photos"><a href="images/20150801_083235.jpg"><img src="images/display/20150801_083235.jpg" alt="Artwork photograph" loading="lazy"></a></li>
+            <li data-categories="sketches"><a href="images/Scanned-image-26-0.jpg"><img src="images/display/Scanned-image-26-0.jpg" alt="Scanned sketch 26" loading="lazy"></a></li>
+            <li data-categories="sketches"><a href="images/Scanned-image-6-0.jpg"><img src="images/display/Scanned-image-6-0.jpg" alt="Scanned sketch 6" loading="lazy"></a></li>
+            <li data-categories="sketches"><a href="images/Scanned-image-27-0.jpg"><img src="images/display/Scanned-image-27-0.jpg" alt="Scanned sketch 27" loading="lazy"></a></li>
+            <li data-categories="sketches"><a href="images/Scanned-image-29-0.jpg"><img src="images/display/Scanned-image-29-0.jpg" alt="Scanned sketch 29" loading="lazy"></a></li>
+            <li data-categories="sketches"><a href="images/Scanned-image-30-0.jpg"><img src="images/display/Scanned-image-30-0.jpg" alt="Scanned sketch 30" loading="lazy"></a></li>
+            <li data-categories="sketches"><a href="images/Scanned-image-5-0.jpg"><img src="images/display/Scanned-image-5-0.jpg" alt="Scanned sketch 5" loading="lazy"></a></li>
+            <li data-categories="sketches"><a href="images/Scanned-image-12-0.jpg"><img src="images/display/Scanned-image-12-0.jpg" alt="Scanned sketch 12" loading="lazy"></a></li>
+            <li data-categories="figures"><a href="images/Sphere.jpg"><img src="images/display/Sphere.jpg" alt="Sphere" loading="lazy"></a></li>
+            <li data-categories="figures"><a href="images/Eye.jpg"><img src="images/display/Eye.jpg" alt="Eye" loading="lazy"></a></li>
             
-            <li><a href="images/Abstract Doodle Fun.jpeg"><img src="images/display/Abstract Doodle Fun.jpeg" alt="Abstract Doodle Fun" loading="lazy"></a></li>
-            <li><a href="images/Birds on a branch.jpeg"><img src="images/display/Birds on a branch.jpeg" alt="Birds on a branch" loading="lazy"></a></li>
-            <li><a href="images/Body Builder.jpeg"><img src="images/display/Body Builder.jpeg" alt="Body Builder" loading="lazy"></a></li>
-            <li><a href="images/Body Form Sketch.jpeg"><img src="images/display/Body Form Sketch.jpeg" alt="Body Form Sketch" loading="lazy"></a></li>
-            <li><a href="images/Captain America Rough Doodle 001.jpeg"><img src="images/display/Captain America Rough Doodle 001.jpeg" alt="Captain America Rough Doodle" loading="lazy"></a></li>
-            <li><a href="images/Captain America Shield.jpeg"><img src="images/display/Captain America Shield.jpeg" alt="Captain America Shield" loading="lazy"></a></li>
-            <li><a href="images/Cartoon Cat Update 02.jpeg"><img src="images/display/Cartoon Cat Update 02.jpeg" alt="Cartoon Cat Update 02" loading="lazy"></a></li>
-            <li><a href="images/Catwalk Models.jpeg"><img src="images/display/Catwalk Models.jpeg" alt="Catwalk Models" loading="lazy"></a></li>
-            <li><a href="images/Chinese Dragon.jpeg"><img src="images/display/Chinese Dragon.jpeg" alt="Chinese Dragon" loading="lazy"></a></li>
-            <li><a href="images/Crouching Figure.jpeg"><img src="images/display/Crouching Figure.jpeg" alt="Crouching Figure" loading="lazy"></a></li>
-            <li><a href="images/Dog Tags 001.jpeg"><img src="images/display/Dog Tags 001.jpeg" alt="Dog Tags" loading="lazy"></a></li>
-            <li><a href="images/Dog Tags 002.jpeg"><img src="images/display/Dog Tags 002.jpeg" alt="Dog Tags" loading="lazy"></a></li>
-            <li><a href="images/Drone 002.jpeg"><img src="images/display/Drone 002.jpeg" alt="Drone" loading="lazy"></a></li>
-            <li><a href="images/Drone.jpeg"><img src="images/display/Drone.jpeg" alt="Drone" loading="lazy"></a></li>
-            <li><a href="images/Ear on ipad.jpeg"><img src="images/display/Ear on ipad.jpeg" alt="Ear on ipad" loading="lazy"></a></li>
-            <li><a href="images/Eye A4.jpeg"><img src="images/display/Eye A4.jpeg" alt="Eye A4" loading="lazy"></a></li>
-            <li><a href="images/Eye Arrow.jpeg"><img src="images/display/Eye Arrow.jpeg" alt="Eye Arrow" loading="lazy"></a></li>
-            <li><a href="images/Female Head Form Test.jpeg"><img src="images/display/Female Head Form Test.jpeg" alt="Female Head Form Test" loading="lazy"></a></li>
-            <li><a href="images/Female Head Test 002.jpeg"><img src="images/display/Female Head Test 002.jpeg" alt="Female Head Test" loading="lazy"></a></li>
-            <li><a href="images/Fist 001.jpeg"><img src="images/display/Fist 001.jpeg" alt="Fist" loading="lazy"></a></li>
-            <li><a href="images/Fist 002.jpeg"><img src="images/display/Fist 002.jpeg" alt="Fist" loading="lazy"></a></li>
-            <li><a href="images/Four Spheres ipad.jpeg"><img src="images/display/Four Spheres ipad.jpeg" alt="Four Spheres ipad" loading="lazy"></a></li>
-            <li><a href="images/George on the sofa.jpeg"><img src="images/display/George on the sofa.jpeg" alt="George on the sofa" loading="lazy"></a></li>
-            <li><a href="images/Iris on ipad.jpeg"><img src="images/display/Iris on ipad.jpeg" alt="Iris on ipad" loading="lazy"></a></li>
-            <li><a href="images/Ironman Helmet - Gold Titanium Alloy.jpeg"><img src="images/display/Ironman Helmet - Gold Titanium Alloy.jpeg" alt="Ironman Helmet - Gold Titanium Alloy" loading="lazy"></a></li>
-            <li><a href="images/Ironman Work In Progress 3.jpeg"><img src="images/display/Ironman Work In Progress 3.jpeg" alt="Ironman Work In Progress 3" loading="lazy"></a></li>
-            <li><a href="images/Ironman Work In Progress 4.jpeg"><img src="images/display/Ironman Work In Progress 4.jpeg" alt="Ironman Work In Progress 4" loading="lazy"></a></li>
-            <li><a href="images/Jack and the Beanstalk.jpeg"><img src="images/display/Jack and the Beanstalk.jpeg" alt="Jack and the Beanstalk" loading="lazy"></a></li>
-            <li><a href="images/Kitchen Robot.jpeg"><img src="images/display/Kitchen Robot.jpeg" alt="Kitchen Robot" loading="lazy"></a></li>
-            <li><a href="images/Left Hand.jpeg"><img src="images/display/Left Hand.jpeg" alt="Left Hand" loading="lazy"></a></li>
-            <li><a href="images/Lips Test 001.jpeg"><img src="images/display/Lips Test 001.jpeg" alt="Lips Test" loading="lazy"></a></li>
-            <li><a href="images/Looking Down.jpeg"><img src="images/display/Looking Down.jpeg" alt="Looking Down" loading="lazy"></a></li>
-            <li><a href="images/Male Torso 001.jpeg"><img src="images/display/Male Torso 001.jpeg" alt="Male Torso" loading="lazy"></a></li>
-            <li><a href="images/Male Torso 002.jpeg"><img src="images/display/Male Torso 002.jpeg" alt="Male Torso" loading="lazy"></a></li>
-            <li><a href="images/Male Torso 003.jpeg"><img src="images/display/Male Torso 003.jpeg" alt="Male Torso" loading="lazy"></a></li>
-            <li><a href="images/Male Torso 004.jpeg"><img src="images/display/Male Torso 004.jpeg" alt="Male Torso" loading="lazy"></a></li>
-            <li><a href="images/Manga George.jpeg"><img src="images/display/Manga George.jpeg" alt="Manga George" loading="lazy"></a></li>
-            <li><a href="images/My Left Hand.jpeg"><img src="images/display/My Left Hand.jpeg" alt="My Left Hand" loading="lazy"></a></li>
-            <li><a href="images/Night Ops.jpeg"><img src="images/display/Night Ops.jpeg" alt="Night Ops" loading="lazy"></a></li>
-            <li><a href="images/Poki Ball - Red Blue Plastic Gloss.jpeg"><img src="images/display/Poki Ball - Red Blue Plastic Gloss.jpeg" alt="Poki Ball - Red Blue Plastic Gloss" loading="lazy"></a></li>
-            <li><a href="images/Pose Test 001.jpeg"><img src="images/display/Pose Test 001.jpeg" alt="Pose Test" loading="lazy"></a></li>
-            <li><a href="images/Pumpkin 004.jpeg"><img src="images/display/Pumpkin 004.jpeg" alt="Pumpkin" loading="lazy"></a></li>
-            <li><a href="images/pumpkin_carving___disney_rear_stage_2_by_ulysses74_dbrdyov-fullview.jpg"><img src="images/display/pumpkin_carving___disney_rear_stage_2_by_ulysses74_dbrdyov-fullview.jpg" alt="pumpkin carving disney rear stage 2" loading="lazy"></a></li>
-            <li><a href="images/pumpkin_carving___disney_stage_2_by_ulysses74_dbrdw7d-fullview.jpg"><img src="images/display/pumpkin_carving___disney_stage_2_by_ulysses74_dbrdw7d-fullview.jpg" alt="pumpkin carving disney stage 2" loading="lazy"></a></li>
-            <li><a href="images/pumpkin_carving___ghostbusters_stage_2_by_ulysses74_dbrdspy-fullview.jpg"><img src="images/display/pumpkin_carving___ghostbusters_stage_2_by_ulysses74_dbrdspy-fullview.jpg" alt="pumpkin carving ghostbusters stage 2" loading="lazy"></a></li>
-            <li><a href="images/pumpkin_carving_number_2_in_progress_by_ulysses74_dbrltcq-fullview.jpg"><img src="images/display/pumpkin_carving_number_2_in_progress_by_ulysses74_dbrltcq-fullview.jpg" alt="pumpkin carving number 2 in progress" loading="lazy"></a></li>
-            <li><a href="images/Tired Eyes.jpeg"><img src="images/display/Tired Eyes.jpeg" alt="Tired Eyes" loading="lazy"></a></li>
-            <li><a href="images/Warrior Girl.jpeg"><img src="images/display/Warrior Girl.jpeg" alt="Warrior Girl" loading="lazy"></a></li>
-            <li><a href="images/Young Wizard 001.jpeg"><img src="images/display/Young Wizard 001.jpeg" alt="Young Wizard" loading="lazy"></a></li>
+            <li data-categories="sketches"><a href="images/Abstract Doodle Fun.jpeg"><img src="images/display/Abstract Doodle Fun.jpeg" alt="Abstract Doodle Fun" loading="lazy"></a></li>
+            <li data-categories="other"><a href="images/Birds on a branch.jpeg"><img src="images/display/Birds on a branch.jpeg" alt="Birds on a branch" loading="lazy"></a></li>
+            <li data-categories="figures"><a href="images/Body Builder.jpeg"><img src="images/display/Body Builder.jpeg" alt="Body Builder" loading="lazy"></a></li>
+            <li data-categories="figures sketches"><a href="images/Body Form Sketch.jpeg"><img src="images/display/Body Form Sketch.jpeg" alt="Body Form Sketch" loading="lazy"></a></li>
+            <li data-categories="manga sketches"><a href="images/Captain America Rough Doodle 001.jpeg"><img src="images/display/Captain America Rough Doodle 001.jpeg" alt="Captain America Rough Doodle" loading="lazy"></a></li>
+            <li data-categories="manga"><a href="images/Captain America Shield.jpeg"><img src="images/display/Captain America Shield.jpeg" alt="Captain America Shield" loading="lazy"></a></li>
+            <li data-categories="other"><a href="images/Cartoon Cat Update 02.jpeg"><img src="images/display/Cartoon Cat Update 02.jpeg" alt="Cartoon Cat Update 02" loading="lazy"></a></li>
+            <li data-categories="other"><a href="images/Catwalk Models.jpeg"><img src="images/display/Catwalk Models.jpeg" alt="Catwalk Models" loading="lazy"></a></li>
+            <li data-categories="other"><a href="images/Chinese Dragon.jpeg"><img src="images/display/Chinese Dragon.jpeg" alt="Chinese Dragon" loading="lazy"></a></li>
+            <li data-categories="figures"><a href="images/Crouching Figure.jpeg"><img src="images/display/Crouching Figure.jpeg" alt="Crouching Figure" loading="lazy"></a></li>
+            <li data-categories="other"><a href="images/Dog Tags 001.jpeg"><img src="images/display/Dog Tags 001.jpeg" alt="Dog Tags" loading="lazy"></a></li>
+            <li data-categories="other"><a href="images/Dog Tags 002.jpeg"><img src="images/display/Dog Tags 002.jpeg" alt="Dog Tags" loading="lazy"></a></li>
+            <li data-categories="other"><a href="images/Drone 002.jpeg"><img src="images/display/Drone 002.jpeg" alt="Drone" loading="lazy"></a></li>
+            <li data-categories="other"><a href="images/Drone.jpeg"><img src="images/display/Drone.jpeg" alt="Drone" loading="lazy"></a></li>
+            <li data-categories="digital figures"><a href="images/Ear on ipad.jpeg"><img src="images/display/Ear on ipad.jpeg" alt="Ear on ipad" loading="lazy"></a></li>
+            <li data-categories="figures"><a href="images/Eye A4.jpeg"><img src="images/display/Eye A4.jpeg" alt="Eye A4" loading="lazy"></a></li>
+            <li data-categories="figures"><a href="images/Eye Arrow.jpeg"><img src="images/display/Eye Arrow.jpeg" alt="Eye Arrow" loading="lazy"></a></li>
+            <li data-categories="figures"><a href="images/Female Head Form Test.jpeg"><img src="images/display/Female Head Form Test.jpeg" alt="Female Head Form Test" loading="lazy"></a></li>
+            <li data-categories="figures"><a href="images/Female Head Test 002.jpeg"><img src="images/display/Female Head Test 002.jpeg" alt="Female Head Test" loading="lazy"></a></li>
+            <li data-categories="figures"><a href="images/Fist 001.jpeg"><img src="images/display/Fist 001.jpeg" alt="Fist" loading="lazy"></a></li>
+            <li data-categories="figures"><a href="images/Fist 002.jpeg"><img src="images/display/Fist 002.jpeg" alt="Fist" loading="lazy"></a></li>
+            <li data-categories="digital figures"><a href="images/Four Spheres ipad.jpeg"><img src="images/display/Four Spheres ipad.jpeg" alt="Four Spheres ipad" loading="lazy"></a></li>
+            <li data-categories="other"><a href="images/George on the sofa.jpeg"><img src="images/display/George on the sofa.jpeg" alt="George on the sofa" loading="lazy"></a></li>
+            <li data-categories="digital figures"><a href="images/Iris on ipad.jpeg"><img src="images/display/Iris on ipad.jpeg" alt="Iris on ipad" loading="lazy"></a></li>
+            <li data-categories="manga"><a href="images/Ironman Helmet - Gold Titanium Alloy.jpeg"><img src="images/display/Ironman Helmet - Gold Titanium Alloy.jpeg" alt="Ironman Helmet - Gold Titanium Alloy" loading="lazy"></a></li>
+            <li data-categories="manga"><a href="images/Ironman Work In Progress 3.jpeg"><img src="images/display/Ironman Work In Progress 3.jpeg" alt="Ironman Work In Progress 3" loading="lazy"></a></li>
+            <li data-categories="manga"><a href="images/Ironman Work In Progress 4.jpeg"><img src="images/display/Ironman Work In Progress 4.jpeg" alt="Ironman Work In Progress 4" loading="lazy"></a></li>
+            <li data-categories="other"><a href="images/Jack and the Beanstalk.jpeg"><img src="images/display/Jack and the Beanstalk.jpeg" alt="Jack and the Beanstalk" loading="lazy"></a></li>
+            <li data-categories="other"><a href="images/Kitchen Robot.jpeg"><img src="images/display/Kitchen Robot.jpeg" alt="Kitchen Robot" loading="lazy"></a></li>
+            <li data-categories="figures"><a href="images/Left Hand.jpeg"><img src="images/display/Left Hand.jpeg" alt="Left Hand" loading="lazy"></a></li>
+            <li data-categories="figures"><a href="images/Lips Test 001.jpeg"><img src="images/display/Lips Test 001.jpeg" alt="Lips Test" loading="lazy"></a></li>
+            <li data-categories="figures"><a href="images/Looking Down.jpeg"><img src="images/display/Looking Down.jpeg" alt="Looking Down" loading="lazy"></a></li>
+            <li data-categories="figures"><a href="images/Male Torso 001.jpeg"><img src="images/display/Male Torso 001.jpeg" alt="Male Torso" loading="lazy"></a></li>
+            <li data-categories="figures"><a href="images/Male Torso 002.jpeg"><img src="images/display/Male Torso 002.jpeg" alt="Male Torso" loading="lazy"></a></li>
+            <li data-categories="figures"><a href="images/Male Torso 003.jpeg"><img src="images/display/Male Torso 003.jpeg" alt="Male Torso" loading="lazy"></a></li>
+            <li data-categories="figures"><a href="images/Male Torso 004.jpeg"><img src="images/display/Male Torso 004.jpeg" alt="Male Torso" loading="lazy"></a></li>
+            <li data-categories="manga"><a href="images/Manga George.jpeg"><img src="images/display/Manga George.jpeg" alt="Manga George" loading="lazy"></a></li>
+            <li data-categories="figures"><a href="images/My Left Hand.jpeg"><img src="images/display/My Left Hand.jpeg" alt="My Left Hand" loading="lazy"></a></li>
+            <li data-categories="other"><a href="images/Night Ops.jpeg"><img src="images/display/Night Ops.jpeg" alt="Night Ops" loading="lazy"></a></li>
+            <li data-categories="manga"><a href="images/Poki Ball - Red Blue Plastic Gloss.jpeg"><img src="images/display/Poki Ball - Red Blue Plastic Gloss.jpeg" alt="Poki Ball - Red Blue Plastic Gloss" loading="lazy"></a></li>
+            <li data-categories="figures"><a href="images/Pose Test 001.jpeg"><img src="images/display/Pose Test 001.jpeg" alt="Pose Test" loading="lazy"></a></li>
+            <li data-categories="pumpkins"><a href="images/Pumpkin 004.jpeg"><img src="images/display/Pumpkin 004.jpeg" alt="Pumpkin" loading="lazy"></a></li>
+            <li data-categories="pumpkins"><a href="images/pumpkin_carving___disney_rear_stage_2_by_ulysses74_dbrdyov-fullview.jpg"><img src="images/display/pumpkin_carving___disney_rear_stage_2_by_ulysses74_dbrdyov-fullview.jpg" alt="pumpkin carving disney rear stage 2" loading="lazy"></a></li>
+            <li data-categories="pumpkins"><a href="images/pumpkin_carving___disney_stage_2_by_ulysses74_dbrdw7d-fullview.jpg"><img src="images/display/pumpkin_carving___disney_stage_2_by_ulysses74_dbrdw7d-fullview.jpg" alt="pumpkin carving disney stage 2" loading="lazy"></a></li>
+            <li data-categories="pumpkins"><a href="images/pumpkin_carving___ghostbusters_stage_2_by_ulysses74_dbrdspy-fullview.jpg"><img src="images/display/pumpkin_carving___ghostbusters_stage_2_by_ulysses74_dbrdspy-fullview.jpg" alt="pumpkin carving ghostbusters stage 2" loading="lazy"></a></li>
+            <li data-categories="pumpkins"><a href="images/pumpkin_carving_number_2_in_progress_by_ulysses74_dbrltcq-fullview.jpg"><img src="images/display/pumpkin_carving_number_2_in_progress_by_ulysses74_dbrltcq-fullview.jpg" alt="pumpkin carving number 2 in progress" loading="lazy"></a></li>
+            <li data-categories="figures"><a href="images/Tired Eyes.jpeg"><img src="images/display/Tired Eyes.jpeg" alt="Tired Eyes" loading="lazy"></a></li>
+            <li data-categories="manga"><a href="images/Warrior Girl.jpeg"><img src="images/display/Warrior Girl.jpeg" alt="Warrior Girl" loading="lazy"></a></li>
+            <li data-categories="manga"><a href="images/Young Wizard 001.jpeg"><img src="images/display/Young Wizard 001.jpeg" alt="Young Wizard" loading="lazy"></a></li>
             
-            <li><a href="images/IMG_5216.png"><img src="images/display/IMG_5216.png" alt="IMG" loading="lazy"></a></li>
-            <li><a href="images/IMG_5217.png"><img src="images/display/IMG_5217.png" alt="IMG" loading="lazy"></a></li>
-            <li><a href="images/IMG_5218.png"><img src="images/display/IMG_5218.png" alt="IMG" loading="lazy"></a></li>
-            <li><a href="images/IMG_5219.png"><img src="images/display/IMG_5219.png" alt="IMG" loading="lazy"></a></li>
-            <li><a href="images/IMG_5220.png"><img src="images/display/IMG_5220.png" alt="IMG" loading="lazy"></a></li>
-            <li><a href="images/IMG_5222.png"><img src="images/display/IMG_5222.png" alt="IMG" loading="lazy"></a></li>
-            <li><a href="images/IMG_5224.png"><img src="images/display/IMG_5224.png" alt="IMG" loading="lazy"></a></li>
-            <li><a href="images/IMG_5225.png"><img src="images/display/IMG_5225.png" alt="IMG" loading="lazy"></a></li>
-            <li><a href="images/IMG_5226.png"><img src="images/display/IMG_5226.png" alt="IMG" loading="lazy"></a></li>
-            <li><a href="images/IMG_5227.png"><img src="images/display/IMG_5227.png" alt="IMG" loading="lazy"></a></li>
+            <li data-categories="photos"><a href="images/IMG_5216.png"><img src="images/display/IMG_5216.png" alt="IMG" loading="lazy"></a></li>
+            <li data-categories="photos"><a href="images/IMG_5217.png"><img src="images/display/IMG_5217.png" alt="IMG" loading="lazy"></a></li>
+            <li data-categories="photos"><a href="images/IMG_5218.png"><img src="images/display/IMG_5218.png" alt="IMG" loading="lazy"></a></li>
+            <li data-categories="photos"><a href="images/IMG_5219.png"><img src="images/display/IMG_5219.png" alt="IMG" loading="lazy"></a></li>
+            <li data-categories="photos"><a href="images/IMG_5220.png"><img src="images/display/IMG_5220.png" alt="IMG" loading="lazy"></a></li>
+            <li data-categories="photos"><a href="images/IMG_5222.png"><img src="images/display/IMG_5222.png" alt="IMG" loading="lazy"></a></li>
+            <li data-categories="photos"><a href="images/IMG_5224.png"><img src="images/display/IMG_5224.png" alt="IMG" loading="lazy"></a></li>
+            <li data-categories="photos"><a href="images/IMG_5225.png"><img src="images/display/IMG_5225.png" alt="IMG" loading="lazy"></a></li>
+            <li data-categories="photos"><a href="images/IMG_5226.png"><img src="images/display/IMG_5226.png" alt="IMG" loading="lazy"></a></li>
+            <li data-categories="photos"><a href="images/IMG_5227.png"><img src="images/display/IMG_5227.png" alt="IMG" loading="lazy"></a></li>
 
         </ul>
         
     </main>
+    <div id="category-menu" class="category-menu" hidden>
+        <p class="category-menu__title">Set categories</p>
+        <form id="category-menu-form"></form>
+        <div class="category-menu__actions">
+            <button type="button" id="category-menu-hide" class="category-menu__hide">Hide image</button>
+            <button type="button" id="category-menu-delete" class="category-menu__delete" hidden>Delete permanently</button>
+        </div>
+    </div>
+    <script>
+        const CATEGORIES = [
+            { id: "digital", label: "Digital" },
+            { id: "manga", label: "Manga" },
+            { id: "pumpkins", label: "Pumpkins" },
+            { id: "sketches", label: "Sketches" },
+            { id: "figures", label: "Figures" },
+            { id: "painting", label: "Painting" },
+            { id: "photos", label: "Photos" },
+            { id: "other", label: "Other" },
+        ];
+        const STORAGE_KEY = "gallery-category-overrides";
+        const HIDDEN_STORAGE_KEY = "gallery-hidden-items";
+        const UPLOAD_DB_NAME = "art-gallery-uploads";
+        const UPLOAD_STORE_NAME = "uploads";
+        const WIDE_ASPECT_RATIO = 1.55;
+
+        const gallery = document.getElementById("gallery");
+        const categoryMenu = document.getElementById("category-menu");
+        const categoryMenuForm = document.getElementById("category-menu-form");
+        const categoryMenuHide = document.getElementById("category-menu-hide");
+        const categoryMenuDelete = document.getElementById("category-menu-delete");
+        const addArtworkPanel = document.getElementById("add-artwork");
+        const hiddenArtworkPanel = document.getElementById("hidden-artwork");
+        const hiddenArtworkList = document.getElementById("hidden-artwork-list");
+        const toggleHiddenArtworkButton = document.getElementById("toggle-hidden-artwork");
+        const addArtworkFiles = document.getElementById("add-artwork-files");
+        const addArtworkPreview = document.getElementById("add-artwork-preview");
+        const addArtworkSubmit = document.getElementById("add-artwork-submit");
+        const addArtworkClear = document.getElementById("add-artwork-clear");
+        const exportUploadsButton = document.getElementById("export-uploads");
+
+        let activeFilter = "all";
+        let activeItem = null;
+        let pendingUploads = [];
+        let uploadDbPromise = null;
+
+        function getImageKey(item) {
+            if (item.dataset.uploadId) {
+                return `uploaded:${item.dataset.uploadId}`;
+            }
+            return item.querySelector("a").getAttribute("href");
+        }
+
+        function getCategories(item) {
+            return item.dataset.categories.split(" ").filter(Boolean);
+        }
+
+        function setCategories(item, categories) {
+            const unique = [...new Set(categories)].sort();
+            item.dataset.categories = unique.length ? unique.join(" ") : "other";
+        }
+
+        function filenameToAlt(filename) {
+            return filename
+                .replace(/\.[^.]+$/, "")
+                .replace(/[_-]+/g, " ")
+                .replace(/\s+/g, " ")
+                .trim();
+        }
+
+        function loadOverrides() {
+            try {
+                return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+            } catch {
+                return {};
+            }
+        }
+
+        function saveOverride(imageKey, categories) {
+            const overrides = loadOverrides();
+            overrides[imageKey] = categories;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(overrides));
+        }
+
+        function clearOverride(imageKey) {
+            const overrides = loadOverrides();
+            delete overrides[imageKey];
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(overrides));
+        }
+
+        function loadHiddenRecords() {
+            try {
+                const raw = JSON.parse(localStorage.getItem(HIDDEN_STORAGE_KEY) || "[]");
+                return raw.map((item) => {
+                    if (typeof item === "string") {
+                        const href = item;
+                        const overrides = loadOverrides();
+                        return {
+                            key: href,
+                            type: "builtin",
+                            href,
+                            src: href.replace(/^images\//, "images/display/"),
+                            alt: filenameToAlt(href.split("/").pop() || "Artwork"),
+                            categories: overrides[href] || ["other"],
+                        };
+                    }
+                    return item;
+                });
+            } catch {
+                return [];
+            }
+        }
+
+        function saveHiddenRecords(records) {
+            localStorage.setItem(HIDDEN_STORAGE_KEY, JSON.stringify(records));
+        }
+
+        function saveHiddenRecord(record) {
+            const records = loadHiddenRecords();
+            if (!records.some((entry) => entry.key === record.key)) {
+                records.push(record);
+                saveHiddenRecords(records);
+            }
+        }
+
+        function removeHiddenRecord(key) {
+            saveHiddenRecords(loadHiddenRecords().filter((entry) => entry.key !== key));
+        }
+
+        function applyHiddenItems() {
+            const hidden = new Set(loadHiddenRecords().map((entry) => entry.key));
+            gallery.querySelectorAll('li:not([data-uploaded="true"])').forEach((item) => {
+                if (hidden.has(getImageKey(item))) {
+                    item.remove();
+                }
+            });
+        }
+
+        function getVisibleUploads(uploads) {
+            return uploads.filter((upload) => !upload.hidden);
+        }
+
+        async function getHiddenCount() {
+            const uploads = await readUploads();
+            return loadHiddenRecords().length + uploads.filter((upload) => upload.hidden).length;
+        }
+
+        async function updateHiddenArtworkUi() {
+            const count = await getHiddenCount();
+            toggleHiddenArtworkButton.hidden = count === 0;
+            toggleHiddenArtworkButton.textContent = count === 1
+                ? "Hidden artwork (1)"
+                : `Hidden artwork (${count})`;
+        }
+
+        function applyStoredCategories() {
+            const overrides = loadOverrides();
+            gallery.querySelectorAll("li").forEach((item) => {
+                const imageKey = getImageKey(item);
+                if (overrides[imageKey]) {
+                    setCategories(item, overrides[imageKey]);
+                }
+            });
+        }
+
+        function applyFilter(category) {
+            activeFilter = category;
+            gallery.querySelectorAll("li").forEach((item) => {
+                if (category === "all") {
+                    item.classList.remove("is-hidden");
+                    return;
+                }
+                const categories = getCategories(item);
+                item.classList.toggle("is-hidden", !categories.includes(category));
+            });
+        }
+
+        function applyGalleryLayout(image) {
+            const item = image.closest("li");
+            if (!item) {
+                return;
+            }
+            const { naturalWidth, naturalHeight } = image;
+            if (!naturalWidth || !naturalHeight) {
+                return;
+            }
+            item.classList.toggle(
+                "gallery-item--wide",
+                naturalWidth / naturalHeight >= WIDE_ASPECT_RATIO
+            );
+        }
+
+        function initGalleryLayout(root = gallery) {
+            root.querySelectorAll("img").forEach((image) => {
+                if (image.complete && image.naturalWidth) {
+                    applyGalleryLayout(image);
+                    return;
+                }
+                image.addEventListener("load", () => applyGalleryLayout(image), { once: true });
+            });
+        }
+
+        function hideCategoryMenu() {
+            categoryMenu.hidden = true;
+            activeItem = null;
+        }
+
+        function showCategoryMenu(clientX, clientY, item) {
+            activeItem = item;
+            const selected = new Set(getCategories(item));
+            const isUploaded = item.dataset.uploaded === "true";
+            categoryMenuDelete.hidden = !isUploaded;
+
+            categoryMenuForm.innerHTML = CATEGORIES.map(({ id, label }) => `
+                <label>
+                    <input type="checkbox" name="category" value="${id}" ${selected.has(id) ? "checked" : ""}>
+                    ${label}
+                </label>
+            `).join("");
+
+            categoryMenu.hidden = false;
+            categoryMenu.style.left = "0px";
+            categoryMenu.style.top = "0px";
+
+            const menuRect = categoryMenu.getBoundingClientRect();
+            const left = Math.min(clientX, window.innerWidth - menuRect.width - 8);
+            const top = Math.min(clientY, window.innerHeight - menuRect.height - 8);
+            categoryMenu.style.left = `${Math.max(8, left)}px`;
+            categoryMenu.style.top = `${Math.max(8, top)}px`;
+        }
+
+        function openUploadDb() {
+            if (!uploadDbPromise) {
+                uploadDbPromise = new Promise((resolve, reject) => {
+                    const request = indexedDB.open(UPLOAD_DB_NAME, 1);
+                    request.onupgradeneeded = () => {
+                        request.result.createObjectStore(UPLOAD_STORE_NAME, { keyPath: "id" });
+                    };
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = () => reject(request.error);
+                });
+            }
+            return uploadDbPromise;
+        }
+
+        function readUploads() {
+            return openUploadDb().then((db) => new Promise((resolve, reject) => {
+                const transaction = db.transaction(UPLOAD_STORE_NAME, "readonly");
+                const store = transaction.objectStore(UPLOAD_STORE_NAME);
+                const request = store.getAll();
+                request.onsuccess = () => resolve(request.result || []);
+                request.onerror = () => reject(request.error);
+            }));
+        }
+
+        function saveUpload(record) {
+            return openUploadDb().then((db) => new Promise((resolve, reject) => {
+                const transaction = db.transaction(UPLOAD_STORE_NAME, "readwrite");
+                const store = transaction.objectStore(UPLOAD_STORE_NAME);
+                const request = store.put(record);
+                request.onsuccess = () => resolve(record);
+                request.onerror = () => reject(request.error);
+            }));
+        }
+
+        function deleteUpload(id) {
+            return openUploadDb().then((db) => new Promise((resolve, reject) => {
+                const transaction = db.transaction(UPLOAD_STORE_NAME, "readwrite");
+                const store = transaction.objectStore(UPLOAD_STORE_NAME);
+                const request = store.delete(id);
+                request.onsuccess = () => resolve();
+                request.onerror = () => reject(request.error);
+            }));
+        }
+
+        async function hideGalleryItem(item) {
+            const uploadId = item.dataset.uploadId;
+            const link = item.querySelector("a");
+            const image = item.querySelector("img");
+
+            if (uploadId) {
+                const uploads = await readUploads();
+                const upload = uploads.find((entry) => entry.id === uploadId);
+                if (upload) {
+                    upload.hidden = true;
+                    await saveUpload(upload);
+                }
+            } else {
+                const imageKey = getImageKey(item);
+                saveHiddenRecord({
+                    key: imageKey,
+                    type: "builtin",
+                    href: link.getAttribute("href"),
+                    src: image.getAttribute("src"),
+                    alt: image.getAttribute("alt"),
+                    categories: getCategories(item),
+                });
+                saveOverride(imageKey, getCategories(item));
+            }
+
+            if (link?.href.startsWith("blob:")) {
+                URL.revokeObjectURL(link.href);
+            }
+
+            item.remove();
+            hideCategoryMenu();
+            await updateHiddenArtworkUi();
+            if (!hiddenArtworkPanel.hidden) {
+                await renderHiddenGallery();
+            }
+        }
+
+        async function deleteGalleryItem(item) {
+            const uploadId = item.dataset.uploadId;
+            if (!uploadId) {
+                return;
+            }
+
+            const link = item.querySelector("a");
+            await deleteUpload(uploadId);
+
+            if (link?.href.startsWith("blob:")) {
+                URL.revokeObjectURL(link.href);
+            }
+
+            item.remove();
+            hideCategoryMenu();
+
+            const uploads = await readUploads();
+            exportUploadsButton.hidden = getVisibleUploads(uploads).length === 0;
+            await updateHiddenArtworkUi();
+            if (!hiddenArtworkPanel.hidden) {
+                await renderHiddenGallery();
+            }
+        }
+
+        async function permanentlyDeleteHiddenItem({ key, type, uploadId }) {
+            if (type === "upload") {
+                await deleteUpload(uploadId);
+            } else {
+                removeHiddenRecord(key);
+                clearOverride(key);
+            }
+
+            const uploads = await readUploads();
+            exportUploadsButton.hidden = getVisibleUploads(uploads).length === 0;
+            await renderHiddenGallery();
+            await updateHiddenArtworkUi();
+        }
+
+        async function restoreHiddenItem({ key, type, uploadId }) {
+            if (type === "upload") {
+                const uploads = await readUploads();
+                const upload = uploads.find((entry) => entry.id === uploadId);
+                if (upload) {
+                    upload.hidden = false;
+                    await saveUpload(upload);
+                    await renderUploadedItems(uploads);
+                    applyStoredCategories();
+                    applyFilter(activeFilter);
+                }
+            } else {
+                const record = loadHiddenRecords().find((entry) => entry.key === key);
+                if (!record) {
+                    return;
+                }
+
+                removeHiddenRecord(key);
+                const item = createGalleryItem({
+                    href: record.href,
+                    src: record.src,
+                    alt: record.alt,
+                    categories: record.categories,
+                });
+                gallery.prepend(item);
+                applyStoredCategories();
+                applyFilter(activeFilter);
+            }
+
+            await renderHiddenGallery();
+            await updateHiddenArtworkUi();
+        }
+
+        function buildHiddenArtworkCard({ key, type, uploadId, src, alt, meta }) {
+            const item = document.createElement("div");
+            item.className = "add-artwork__item hidden-artwork__item";
+            item.dataset.hiddenKey = key;
+            item.dataset.hiddenType = type;
+            if (uploadId) {
+                item.dataset.uploadId = uploadId;
+            }
+            item.innerHTML = `
+                <img class="add-artwork__thumb" src="${src}" alt="${alt}">
+                <div class="add-artwork__fields">
+                    <p class="hidden-artwork__label">${alt}</p>
+                    <p class="hidden-artwork__meta">${meta}</p>
+                    <div class="gallery-actions">
+                        <button type="button" data-action="show">Show in gallery</button>
+                        <button type="button" data-action="delete" class="category-menu__delete">Delete permanently</button>
+                    </div>
+                </div>
+            `;
+            return item;
+        }
+
+        async function renderHiddenGallery() {
+            hiddenArtworkList.querySelectorAll('img[src^="blob:"]').forEach((image) => {
+                URL.revokeObjectURL(image.src);
+            });
+            hiddenArtworkList.innerHTML = "";
+            const builtinHidden = loadHiddenRecords();
+            const uploads = await readUploads();
+            const uploadHidden = uploads.filter((upload) => upload.hidden);
+
+            if (!builtinHidden.length && !uploadHidden.length) {
+                hiddenArtworkList.innerHTML = '<p class="add-artwork__hint">No hidden artwork.</p>';
+                return;
+            }
+
+            uploadHidden
+                .sort((a, b) => a.addedAt - b.addedAt)
+                .forEach((upload) => {
+                    const objectUrl = URL.createObjectURL(upload.blob);
+                    hiddenArtworkList.appendChild(buildHiddenArtworkCard({
+                        key: `uploaded:${upload.id}`,
+                        type: "upload",
+                        uploadId: upload.id,
+                        src: objectUrl,
+                        alt: upload.alt,
+                        meta: "Added artwork hidden from gallery",
+                    }));
+                });
+
+            builtinHidden.forEach((record) => {
+                hiddenArtworkList.appendChild(buildHiddenArtworkCard({
+                    key: record.key,
+                    type: "builtin",
+                    src: record.src,
+                    alt: record.alt,
+                    meta: "Gallery image hidden in this browser",
+                }));
+            });
+        }
+
+        function createGalleryItem({ href, src, alt, categories, uploadId = null }) {
+            const item = document.createElement("li");
+            item.dataset.categories = categories.join(" ");
+            if (uploadId) {
+                item.dataset.uploaded = "true";
+                item.dataset.uploadId = uploadId;
+            }
+            const link = document.createElement("a");
+            link.href = href;
+            const image = document.createElement("img");
+            image.src = src;
+            image.alt = alt;
+            image.loading = "lazy";
+            link.appendChild(image);
+            item.appendChild(link);
+            image.addEventListener("load", () => applyGalleryLayout(image), { once: true });
+            if (image.complete && image.naturalWidth) {
+                applyGalleryLayout(image);
+            }
+            return item;
+        }
+
+        function renderUploadedItems(uploads) {
+            gallery.querySelectorAll('li[data-uploaded="true"]').forEach((item) => item.remove());
+
+            getVisibleUploads(uploads).sort((a, b) => a.addedAt - b.addedAt).forEach((upload) => {
+                const objectUrl = URL.createObjectURL(upload.blob);
+                const item = createGalleryItem({
+                    href: objectUrl,
+                    src: objectUrl,
+                    alt: upload.alt,
+                    categories: upload.categories,
+                    uploadId: upload.id,
+                });
+                gallery.prepend(item);
+            });
+
+            exportUploadsButton.hidden = getVisibleUploads(uploads).length === 0;
+            initGalleryLayout();
+        }
+
+        function renderCategoryCheckboxes(selectedCategories = ["other"]) {
+            const selected = new Set(selectedCategories);
+            return CATEGORIES.map(({ id, label }) => `
+                <label>
+                    <input type="checkbox" value="${id}" ${selected.has(id) ? "checked" : ""}>
+                    ${label}
+                </label>
+            `).join("");
+        }
+
+        function readPendingUploadForm(itemElement) {
+            const alt = itemElement.querySelector('input[name="alt"]').value.trim()
+                || filenameToAlt(itemElement.dataset.filename);
+            const categories = [...itemElement.querySelectorAll('.add-artwork__categories input:checked')]
+                .map((input) => input.value);
+            return {
+                alt,
+                categories: categories.length ? categories : ["other"],
+            };
+        }
+
+        function renderPendingUploads() {
+            addArtworkPreview.innerHTML = "";
+            pendingUploads.forEach((pending, index) => {
+                const item = document.createElement("div");
+                item.className = "add-artwork__item";
+                item.dataset.filename = pending.file.name;
+                item.innerHTML = `
+                    <img class="add-artwork__thumb" src="${pending.previewUrl}" alt="">
+                    <div class="add-artwork__fields">
+                        <label>
+                            Alt text
+                            <input type="text" name="alt" value="${filenameToAlt(pending.file.name)}">
+                        </label>
+                        <div class="add-artwork__categories">
+                            ${renderCategoryCheckboxes(["other"])}
+                        </div>
+                    </div>
+                `;
+                addArtworkPreview.appendChild(item);
+            });
+
+            const hasPending = pendingUploads.length > 0;
+            addArtworkSubmit.disabled = !hasPending;
+            addArtworkClear.disabled = !hasPending;
+        }
+
+        function clearPendingUploads() {
+            pendingUploads.forEach((pending) => URL.revokeObjectURL(pending.previewUrl));
+            pendingUploads = [];
+            addArtworkFiles.value = "";
+            renderPendingUploads();
+        }
+
+        function downloadBlob(blob, filename) {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = filename;
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function buildGallerySnippet(upload) {
+            const categories = upload.categories.join(" ");
+            const imagePath = `images/${upload.filename}`;
+            return `            <li data-categories="${categories}"><a href="${imagePath}"><img src="images/display/${upload.filename}" alt="${upload.alt}" loading="lazy"></a></li>`;
+        }
+
+        async function exportUploadedArtwork() {
+            const uploads = getVisibleUploads(await readUploads());
+            if (!uploads.length) {
+                return;
+            }
+
+            const htmlSnippets = uploads.map(buildGallerySnippet).join("\n");
+            const instructions = [
+                "Gallery additions export",
+                "",
+                "1. Save each downloaded image into the images/ folder.",
+                "2. Paste the HTML below into index.html inside <ul id=\"gallery\">.",
+                "3. Run: python optimize_images.py",
+                "4. Commit and push the changes.",
+                "",
+                "HTML snippets:",
+                htmlSnippets,
+            ].join("\n");
+
+            uploads.forEach((upload) => downloadBlob(upload.blob, upload.filename));
+            downloadBlob(new Blob([instructions], { type: "text/plain" }), "gallery-additions.txt");
+        }
+
+        categoryMenuHide.addEventListener("click", async () => {
+            if (!activeItem) {
+                return;
+            }
+
+            const isUploaded = activeItem.dataset.uploaded === "true";
+            const message = isUploaded
+                ? "Hide this added artwork from the gallery? You can show it again from Hidden artwork."
+                : "Hide this image from the gallery in this browser? You can show it again from Hidden artwork.";
+            if (!confirm(message)) {
+                return;
+            }
+
+            await hideGalleryItem(activeItem);
+        });
+
+        categoryMenuDelete.addEventListener("click", async () => {
+            if (!activeItem || !activeItem.dataset.uploadId) {
+                return;
+            }
+
+            if (!confirm("Delete this added artwork permanently? This cannot be undone.")) {
+                return;
+            }
+
+            await deleteGalleryItem(activeItem);
+        });
+
+        categoryMenuForm.addEventListener("change", async () => {
+            if (!activeItem) {
+                return;
+            }
+
+            const selected = [...categoryMenuForm.querySelectorAll('input[name="category"]:checked')]
+                .map((input) => input.value);
+            const categories = selected.length ? selected : ["other"];
+
+            setCategories(activeItem, categories);
+            saveOverride(getImageKey(activeItem), categories);
+
+            if (activeItem.dataset.uploadId) {
+                const uploads = await readUploads();
+                const upload = uploads.find((entry) => entry.id === activeItem.dataset.uploadId);
+                if (upload) {
+                    upload.categories = categories;
+                    await saveUpload(upload);
+                }
+            }
+
+            applyFilter(activeFilter);
+        });
+
+        gallery.addEventListener("contextmenu", (event) => {
+            const item = event.target.closest("li");
+            if (!item || !gallery.contains(item)) {
+                return;
+            }
+
+            event.preventDefault();
+            showCategoryMenu(event.clientX, event.clientY, item);
+        });
+
+        document.addEventListener("click", (event) => {
+            if (!categoryMenu.hidden && !categoryMenu.contains(event.target)) {
+                hideCategoryMenu();
+            }
+        });
+
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Escape") {
+                hideCategoryMenu();
+                addArtworkPanel.hidden = true;
+                hiddenArtworkPanel.hidden = true;
+            }
+        });
+
+        document.querySelectorAll(".filters button").forEach((button) => {
+            button.addEventListener("click", () => {
+                const category = button.dataset.filter;
+                document.querySelectorAll(".filters button").forEach((item) => {
+                    item.setAttribute("aria-pressed", item === button ? "true" : "false");
+                });
+                applyFilter(category);
+            });
+        });
+
+        document.getElementById("toggle-add-artwork").addEventListener("click", () => {
+            addArtworkPanel.hidden = !addArtworkPanel.hidden;
+            if (!addArtworkPanel.hidden) {
+                hiddenArtworkPanel.hidden = true;
+            }
+        });
+
+        document.getElementById("add-artwork-close").addEventListener("click", () => {
+            addArtworkPanel.hidden = true;
+        });
+
+        toggleHiddenArtworkButton.addEventListener("click", async () => {
+            hiddenArtworkPanel.hidden = !hiddenArtworkPanel.hidden;
+            if (!hiddenArtworkPanel.hidden) {
+                addArtworkPanel.hidden = true;
+                await renderHiddenGallery();
+            }
+        });
+
+        document.getElementById("hidden-artwork-close").addEventListener("click", () => {
+            hiddenArtworkPanel.hidden = true;
+        });
+
+        hiddenArtworkList.addEventListener("click", async (event) => {
+            const button = event.target.closest("button[data-action]");
+            const card = event.target.closest(".hidden-artwork__item");
+            if (!button || !card) {
+                return;
+            }
+
+            const payload = {
+                key: card.dataset.hiddenKey,
+                type: card.dataset.hiddenType,
+                uploadId: card.dataset.uploadId,
+            };
+
+            if (button.dataset.action === "show") {
+                await restoreHiddenItem(payload);
+                return;
+            }
+
+            const message = payload.type === "upload"
+                ? "Delete this added artwork permanently?"
+                : "Remove this hidden image from this browser? It will still exist in index.html.";
+            if (!confirm(message)) {
+                return;
+            }
+
+            await permanentlyDeleteHiddenItem(payload);
+        });
+
+        addArtworkFiles.addEventListener("change", () => {
+            clearPendingUploads();
+            [...addArtworkFiles.files].forEach((file) => {
+                pendingUploads.push({
+                    file,
+                    previewUrl: URL.createObjectURL(file),
+                });
+            });
+            renderPendingUploads();
+        });
+
+        addArtworkClear.addEventListener("click", clearPendingUploads);
+
+        addArtworkSubmit.addEventListener("click", async () => {
+            const previewItems = [...addArtworkPreview.querySelectorAll(".add-artwork__item")];
+            for (let index = 0; index < previewItems.length; index += 1) {
+                const formData = readPendingUploadForm(previewItems[index]);
+                const file = pendingUploads[index].file;
+                const record = {
+                    id: crypto.randomUUID(),
+                    filename: file.name,
+                    alt: formData.alt,
+                    categories: formData.categories,
+                    blob: file,
+                    addedAt: Date.now(),
+                };
+                await saveUpload(record);
+            }
+
+            clearPendingUploads();
+            const uploads = await readUploads();
+            renderUploadedItems(uploads);
+            applyStoredCategories();
+            applyFilter(activeFilter);
+            addArtworkPanel.hidden = true;
+        });
+
+        exportUploadsButton.addEventListener("click", exportUploadedArtwork);
+
+        applyHiddenItems();
+        initGalleryLayout();
+        updateHiddenArtworkUi();
+
+        readUploads()
+            .then(async (uploads) => {
+                renderUploadedItems(uploads);
+                applyStoredCategories();
+                applyFilter("all");
+                await updateHiddenArtworkUi();
+            })
+            .catch(() => {
+                applyStoredCategories();
+                applyFilter("all");
+            });
+    </script>
 </body>
 
 </html>
