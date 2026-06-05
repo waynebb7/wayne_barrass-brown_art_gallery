@@ -41,7 +41,7 @@ Share the **viewer** passcode with people you want to see the gallery. Keep the 
 ### How it works
 
 - **Viewer mode** shows the published gallery only. It does not load browser-only edits, uploads, or hidden images.
-- **Admin mode** unlocks all editing tools (add artwork, drag-to-reorder tiles, right-click categories, hidden artwork, manage categories, export).
+- **Admin mode** unlocks all editing tools (add artwork, right-click categories, hidden artwork, manage categories, export).
 - Use **Remember on this device** to stay signed in on that browser.
 - **Sign out** clears access and returns to the passcode screen.
 
@@ -119,24 +119,12 @@ Set `data-categories` to one or more of: `digital`, `manga`, `pumpkins`, `sketch
 
 You can also right-click any image and change its categories. Those edits are saved in localStorage for that browser only.
 
-## Reordering gallery tiles (admin)
-
-In **admin mode**, drag the **⋮⋮** handle on any tile to rearrange the gallery.
-
-1. Drag tiles into the order you want.
-2. Click **Export gallery layout** to download `gallery-order.json`.
-3. Save that file in the project root (next to `index.html`).
-4. Commit and push to GitHub.
-
-After GitHub Pages redeploys, every browser (including viewer mode) uses that layout. Until you export and publish the JSON file, layout changes are only stored as an admin draft in your browser.
-
 ## Project structure
 
 | Path | Purpose |
 | --- | --- |
 | `index.html` | Gallery page with passcode gate |
 | `admin.html` | Shortcut to admin sign in |
-| `gallery-order.json` | Published tile order (created when you export layout) |
 | `images/` | Full-resolution originals (used when an image is clicked) |
 | `images/display/` | Optimized display images (max 800px wide) |
 | `optimize_images.py` | Regenerates files in `images/display/` from `index.html` |
