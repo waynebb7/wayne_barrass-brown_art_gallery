@@ -634,23 +634,177 @@
                 transition-duration: 0.01ms !important;
             }
         }
+
+        .access-gate {
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 1.5rem;
+        }
+
+        .access-gate[hidden] {
+            display: none;
+        }
+
+        .access-gate__panel {
+            width: min(24rem, 100%);
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            background: var(--surface);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .access-gate__panel h2 {
+            margin: 0 0 0.5rem;
+            font-size: 1.35rem;
+        }
+
+        .access-gate__panel p {
+            margin: 0 0 1rem;
+            color: var(--text-muted);
+            font-size: 0.92rem;
+            line-height: 1.5;
+        }
+
+        .access-gate__field {
+            display: block;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .access-gate__field input {
+            width: 100%;
+            margin-top: 0.35rem;
+            font-family: inherit;
+            font-size: 0.95rem;
+            padding: 0.6rem 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background: #fff;
+        }
+
+        .access-gate__error {
+            margin: 0 0 0.85rem;
+            font-size: 0.85rem;
+            color: #b42318;
+        }
+
+        .access-gate__remember {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            margin-top: 0.85rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .access-gate__admin-link {
+            margin: 1rem 0 0;
+            text-align: center;
+        }
+
+        .access-gate__admin-link button {
+            background: transparent;
+            border-color: transparent;
+            color: var(--accent);
+            box-shadow: none;
+            min-height: auto;
+            padding: 0.25rem 0.5rem;
+        }
+
+        .access-gate__admin-link button:hover {
+            background: var(--accent-soft);
+        }
+
+        .session-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.65rem;
+            margin-bottom: 1rem;
+            padding: 0.65rem 0.85rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background: rgba(255, 255, 255, 0.72);
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+
+        .session-bar[hidden] {
+            display: none;
+        }
+
+        .session-bar__role {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .session-bar__spacer {
+            flex: 1 1 auto;
+        }
+
+        .session-bar button {
+            min-height: 2.2rem;
+            font-size: 0.82rem;
+        }
+
+        body[data-access="viewer"] .admin-only {
+            display: none !important;
+        }
+
+        body[data-access="admin"] .viewer-only {
+            display: none !important;
+        }
+
+        body[data-access="viewer"] #gallery li[data-uploaded="true"] {
+            display: none !important;
+        }
     </style>
 </head>
 
 <body>
-    <main>
+    <div id="access-gate" class="access-gate">
+        <div class="access-gate__panel">
+            <h2 id="access-title">Private gallery</h2>
+            <p id="access-description">Enter the passcode shared with you to view this portfolio.</p>
+            <form id="access-form">
+                <label class="access-gate__field">
+                    Passcode
+                    <input type="password" id="access-passcode" autocomplete="current-password" required>
+                </label>
+                <p id="access-error" class="access-gate__error" hidden>Incorrect passcode.</p>
+                <button type="submit" id="access-submit">Enter gallery</button>
+            </form>
+            <label class="access-gate__remember">
+                <input type="checkbox" id="access-remember">
+                Remember on this device
+            </label>
+            <p class="access-gate__admin-link">
+                <button type="button" id="access-show-admin">Admin sign in</button>
+            </p>
+        </div>
+    </div>
+    <main id="gallery-app" hidden>
         <header class="site-header">
             <p class="site-header__eyebrow">Portfolio</p>
             <h1>Wayne Barrass-Brown</h1>
             <p class="site-header__tagline">Original artwork across illustration, painting, and digital media.</p>
         </header>
-        <div class="gallery-actions">
+        <div id="session-bar" class="session-bar" hidden>
+            <span class="session-bar__role" id="session-role-label">Viewing</span>
+            <span class="session-bar__spacer"></span>
+            <button type="button" id="switch-to-admin" class="viewer-only">Admin sign in</button>
+            <button type="button" id="sign-out">Sign out</button>
+        </div>
+        <div class="gallery-actions admin-only">
             <button type="button" id="toggle-add-artwork">Add artwork</button>
             <button type="button" id="toggle-hidden-artwork" hidden>Hidden artwork</button>
             <button type="button" id="toggle-manage-categories">Manage categories</button>
             <button type="button" id="export-uploads" hidden>Export added artwork</button>
         </div>
-        <section id="add-artwork" class="add-artwork" hidden>
+        <section id="add-artwork" class="add-artwork admin-only" hidden>
             <h2>Add artwork</h2>
             <p class="add-artwork__hint">
                 Choose images to preview them here, set alt text and categories, then add them to the gallery.
@@ -664,7 +818,7 @@
                 <button type="button" id="add-artwork-close">Close</button>
             </div>
         </section>
-        <section id="hidden-artwork" class="add-artwork" hidden>
+        <section id="hidden-artwork" class="add-artwork admin-only" hidden>
             <h2>Hidden artwork</h2>
             <p class="add-artwork__hint">
                 Images hidden from the main gallery are stored here in this browser.
@@ -675,7 +829,7 @@
                 <button type="button" id="hidden-artwork-close">Close</button>
             </div>
         </section>
-        <section id="manage-categories" class="add-artwork" hidden>
+        <section id="manage-categories" class="add-artwork admin-only" hidden>
             <h2>Manage categories</h2>
             <p class="add-artwork__hint">
                 Add, rename, or remove categories. Changes apply in this browser and update filters,
@@ -819,7 +973,7 @@
         </ul>
         
     </main>
-    <div id="category-menu" class="category-menu" hidden>
+    <div id="category-menu" class="category-menu admin-only" hidden>
         <p class="category-menu__title">Set categories</p>
         <form id="category-menu-form"></form>
         <div id="category-menu-subfilters" hidden></div>
@@ -829,6 +983,21 @@
         </div>
     </div>
     <script>
+        // Change these passcodes before publishing. On a static site this is casual
+        // privacy only — determined visitors can inspect the page source.
+        const ACCESS_CONFIG = {
+            viewer: {
+                passcode: "gallery-view",
+                label: "Viewer",
+            },
+            admin: {
+                passcode: "wayne-admin",
+                label: "Admin",
+            },
+        };
+        const ACCESS_STORAGE_KEY = "gallery-access-role";
+        const ACCESS_INTENT_KEY = "gallery-access-intent";
+
         const DEFAULT_CATEGORIES = [
             { id: "digital", label: "Digital" },
             { id: "manga", label: "Manga" },
@@ -870,6 +1039,19 @@
         const UPLOAD_STORE_NAME = "uploads";
         const WIDE_ASPECT_RATIO = 1.55;
 
+        const accessGate = document.getElementById("access-gate");
+        const accessForm = document.getElementById("access-form");
+        const accessPasscodeInput = document.getElementById("access-passcode");
+        const accessError = document.getElementById("access-error");
+        const accessRememberInput = document.getElementById("access-remember");
+        const accessTitle = document.getElementById("access-title");
+        const accessDescription = document.getElementById("access-description");
+        const accessShowAdminButton = document.getElementById("access-show-admin");
+        const galleryApp = document.getElementById("gallery-app");
+        const sessionBar = document.getElementById("session-bar");
+        const sessionRoleLabel = document.getElementById("session-role-label");
+        const signOutButton = document.getElementById("sign-out");
+        const switchToAdminButton = document.getElementById("switch-to-admin");
         const gallery = document.getElementById("gallery");
         const categoryMenu = document.getElementById("category-menu");
         const categoryMenuForm = document.getElementById("category-menu-form");
@@ -898,6 +1080,104 @@
         let activeItem = null;
         let pendingUploads = [];
         let uploadDbPromise = null;
+        let accessRole = null;
+        let accessIntent = "viewer";
+        let accessHashes = {};
+
+        function isAdmin() {
+            return accessRole === "admin";
+        }
+
+        async function hashPasscode(passcode) {
+            const data = new TextEncoder().encode(passcode);
+            const digest = await crypto.subtle.digest("SHA-256", data);
+            return Array.from(new Uint8Array(digest))
+                .map((byte) => byte.toString(16).padStart(2, "0"))
+                .join("");
+        }
+
+        async function initAccessHashes() {
+            accessHashes = {
+                viewer: await hashPasscode(ACCESS_CONFIG.viewer.passcode),
+                admin: await hashPasscode(ACCESS_CONFIG.admin.passcode),
+            };
+        }
+
+        function loadStoredAccess() {
+            const stored = localStorage.getItem(ACCESS_STORAGE_KEY)
+                || sessionStorage.getItem(ACCESS_STORAGE_KEY);
+            return stored === "admin" || stored === "viewer" ? stored : null;
+        }
+
+        function saveAccess(role, remember) {
+            sessionStorage.setItem(ACCESS_STORAGE_KEY, role);
+            if (remember) {
+                localStorage.setItem(ACCESS_STORAGE_KEY, role);
+            } else {
+                localStorage.removeItem(ACCESS_STORAGE_KEY);
+            }
+        }
+
+        function clearAccess() {
+            sessionStorage.removeItem(ACCESS_STORAGE_KEY);
+            localStorage.removeItem(ACCESS_STORAGE_KEY);
+        }
+
+        async function verifyPasscode(passcode) {
+            const hash = await hashPasscode(passcode);
+            if (hash === accessHashes.admin) {
+                return "admin";
+            }
+            if (hash === accessHashes.viewer) {
+                return "viewer";
+            }
+            return null;
+        }
+
+        function setAccessGateMode(mode) {
+            accessIntent = mode;
+            const isAdminMode = mode === "admin";
+            accessTitle.textContent = isAdminMode ? "Admin sign in" : "Private gallery";
+            accessDescription.textContent = isAdminMode
+                ? "Enter your admin passcode to manage artwork, categories, and hidden items."
+                : "Enter the passcode shared with you to view this portfolio.";
+            accessShowAdminButton.hidden = isAdminMode;
+            accessPasscodeInput.value = "";
+            accessError.hidden = true;
+            accessPasscodeInput.focus();
+        }
+
+        function applyAccessUi() {
+            document.body.dataset.access = accessRole || "";
+            accessGate.hidden = Boolean(accessRole);
+            galleryApp.hidden = !accessRole;
+            sessionBar.hidden = !accessRole;
+
+            if (!accessRole) {
+                return;
+            }
+
+            const label = accessRole === "admin"
+                ? `${ACCESS_CONFIG.admin.label} mode`
+                : `${ACCESS_CONFIG.viewer.label} mode (read only)`;
+            sessionRoleLabel.textContent = label;
+            switchToAdminButton.hidden = accessRole === "admin";
+        }
+
+        async function grantAccess(role) {
+            accessRole = role;
+            saveAccess(role, accessRememberInput.checked);
+            applyAccessUi();
+            await bootstrapGallery();
+        }
+
+        function lockGallery() {
+            accessRole = null;
+            clearAccess();
+            applyAccessUi();
+            setAccessGateMode("viewer");
+            window.location.reload();
+        }
 
         function getImageKey(item) {
             if (item.dataset.uploadId) {
@@ -1069,9 +1349,11 @@
             gallery.querySelectorAll("li").forEach((item) => {
                 getCategories(item).forEach(registerCategory);
             });
-            loadHiddenRecords().forEach((record) => {
-                record.categories?.forEach(registerCategory);
-            });
+            if (isAdmin()) {
+                loadHiddenRecords().forEach((record) => {
+                    record.categories?.forEach(registerCategory);
+                });
+            }
 
             discovered.sort().forEach((categoryId) => {
                 categories.push({
@@ -2129,6 +2411,10 @@
         });
 
         gallery.addEventListener("contextmenu", (event) => {
+            if (!isAdmin()) {
+                return;
+            }
+
             const item = event.target.closest("li");
             if (!item || !gallery.contains(item)) {
                 return;
@@ -2350,28 +2636,92 @@
 
         exportUploadsButton.addEventListener("click", exportUploadedArtwork);
 
-        categories = loadCategories();
-        mergeDiscoveredCategories();
-        renderFilters();
+        accessForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const passcode = accessPasscodeInput.value;
+            const role = await verifyPasscode(passcode);
 
-        applyHiddenItems();
-        applyStoredCategories();
-        applyStoredTools();
-        applyDefaultTools();
-        initGalleryLayout();
-        updateHiddenArtworkUi();
+            if (accessIntent === "admin" && role !== "admin") {
+                accessError.hidden = false;
+                return;
+            }
 
-        readUploads()
-            .then(async (uploads) => {
+            if (!role) {
+                accessError.hidden = false;
+                return;
+            }
+
+            await grantAccess(role);
+        });
+
+        accessShowAdminButton.addEventListener("click", () => {
+            setAccessGateMode("admin");
+        });
+
+        switchToAdminButton.addEventListener("click", () => {
+            accessRole = null;
+            applyAccessUi();
+            setAccessGateMode("admin");
+        });
+
+        signOutButton.addEventListener("click", lockGallery);
+
+        function bootstrapViewerGallery() {
+            categories = DEFAULT_CATEGORIES.map((category) => ({ ...category }));
+            mergeDiscoveredCategories();
+            renderFilters();
+            initGalleryLayout();
+            applyFilter("all");
+        }
+
+        async function bootstrapAdminGallery() {
+            categories = loadCategories();
+            mergeDiscoveredCategories();
+            renderFilters();
+            applyHiddenItems();
+            applyStoredCategories();
+            applyStoredTools();
+            applyDefaultTools();
+            initGalleryLayout();
+            await updateHiddenArtworkUi();
+
+            try {
+                const uploads = await readUploads();
                 renderUploadedItems(uploads);
                 applyStoredCategories();
                 applyStoredTools();
                 applyFilter("all");
                 await updateHiddenArtworkUi();
-            })
-            .catch(() => {
+            } catch {
                 applyFilter("all");
-            });
+            }
+        }
+
+        async function bootstrapGallery() {
+            if (isAdmin()) {
+                await bootstrapAdminGallery();
+                return;
+            }
+            bootstrapViewerGallery();
+        }
+
+        async function initApp() {
+            await initAccessHashes();
+
+            if (sessionStorage.getItem(ACCESS_INTENT_KEY) === "admin") {
+                sessionStorage.removeItem(ACCESS_INTENT_KEY);
+                setAccessGateMode("admin");
+            }
+
+            accessRole = loadStoredAccess();
+            applyAccessUi();
+
+            if (accessRole) {
+                await bootstrapGallery();
+            }
+        }
+
+        initApp();
     </script>
 </body>
 
