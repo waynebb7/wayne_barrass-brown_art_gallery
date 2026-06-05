@@ -369,11 +369,66 @@
             animation: fade-up 0.35s ease both;
         }
 
+        .gallery-item__drag-handle {
+            display: none;
+            position: absolute;
+            top: 0.45rem;
+            right: 0.45rem;
+            z-index: 2;
+            align-items: center;
+            justify-content: center;
+            width: 1.85rem;
+            height: 1.85rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background: rgba(255, 255, 255, 0.92);
+            color: var(--text-muted);
+            font-size: 0.72rem;
+            letter-spacing: -0.08em;
+            line-height: 1;
+            cursor: grab;
+            box-shadow: var(--shadow);
+            user-select: none;
+            touch-action: none;
+        }
+
+        body[data-access="admin"] .gallery-item__drag-handle {
+            display: inline-flex;
+        }
+
+        .gallery-item__drag-handle:active {
+            cursor: grabbing;
+        }
+
+        #gallery li.is-dragging {
+            opacity: 0.45;
+        }
+
+        #gallery li.drag-over a {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(107, 91, 149, 0.18);
+        }
+
+        .layout-status {
+            margin: 0 0 1rem;
+            padding: 0.7rem 0.85rem;
+            border: 1px solid rgba(107, 91, 149, 0.18);
+            border-radius: var(--radius-md);
+            background: var(--accent-soft);
+            color: var(--text);
+            font-size: 0.85rem;
+        }
+
+        .layout-status[hidden] {
+            display: none;
+        }
+
         #gallery li.gallery-item--wide {
             column-span: all;
         }
 
-        #gallery li a {
+        #gallery li > a {
+            position: relative;
             display: block;
             overflow: hidden;
             border: 1px solid var(--border);
@@ -383,7 +438,7 @@
             transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
         }
 
-        #gallery li a:hover {
+        #gallery li > a:hover {
             border-color: rgba(107, 91, 149, 0.22);
             box-shadow: var(--shadow-hover);
             transform: translateY(-1px);
@@ -798,10 +853,14 @@
             <button type="button" id="switch-to-admin" class="viewer-only">Admin sign in</button>
             <button type="button" id="sign-out">Sign out</button>
         </div>
+        <p id="layout-status" class="layout-status admin-only" hidden>
+            Layout changed. Export gallery layout, save <code>gallery-order.json</code> to the project root, then commit and push.
+        </p>
         <div class="gallery-actions admin-only">
             <button type="button" id="toggle-add-artwork">Add artwork</button>
             <button type="button" id="toggle-hidden-artwork" hidden>Hidden artwork</button>
             <button type="button" id="toggle-manage-categories">Manage categories</button>
+            <button type="button" id="export-gallery-layout">Export gallery layout</button>
             <button type="button" id="export-uploads" hidden>Export added artwork</button>
         </div>
         <section id="add-artwork" class="add-artwork admin-only" hidden>
@@ -1035,6 +1094,8 @@
         const TOOLS_STORAGE_KEY = "gallery-tool-overrides";
         const CATEGORIES_STORAGE_KEY = "gallery-categories";
         const HIDDEN_STORAGE_KEY = "gallery-hidden-items";
+        const ORDER_DRAFT_STORAGE_KEY = "gallery-order-draft";
+        const GALLERY_ORDER_URL = "gallery-order.json";
         const UPLOAD_DB_NAME = "art-gallery-uploads";
         const UPLOAD_STORE_NAME = "uploads";
         const WIDE_ASPECT_RATIO = 1.55;
@@ -1052,6 +1113,8 @@
         const sessionRoleLabel = document.getElementById("session-role-label");
         const signOutButton = document.getElementById("sign-out");
         const switchToAdminButton = document.getElementById("switch-to-admin");
+        const layoutStatus = document.getElementById("layout-status");
+        const exportGalleryLayoutButton = document.getElementById("export-gallery-layout");
         const gallery = document.getElementById("gallery");
         const categoryMenu = document.getElementById("category-menu");
         const categoryMenuForm = document.getElementById("category-menu-form");
@@ -1083,6 +1146,8 @@
         let accessRole = null;
         let accessIntent = "viewer";
         let accessHashes = {};
+        let publishedGalleryOrder = null;
+        let draggedGalleryItem = null;
 
         function isAdmin() {
             return accessRole === "admin";
@@ -1184,6 +1249,246 @@
                 return `uploaded:${item.dataset.uploadId}`;
             }
             return item.querySelector("a").getAttribute("href");
+        }
+
+        function collectGalleryOrder() {
+            return [...gallery.querySelectorAll("li")].map((item) => getImageKey(item));
+        }
+
+        function normalizeGalleryOrder(order) {
+            if (!Array.isArray(order)) {
+                return [];
+            }
+            return order.filter((key) => typeof key === "string" && key.length);
+        }
+
+        function applyGalleryOrder(orderKeys) {
+            const normalized = normalizeGalleryOrder(orderKeys);
+            if (!normalized.length) {
+                return;
+            }
+
+            const items = [...gallery.querySelectorAll("li")];
+            const byKey = new Map(items.map((item) => [getImageKey(item), item]));
+            const sorted = [];
+            const used = new Set();
+
+            normalized.forEach((key) => {
+                const item = byKey.get(key);
+                if (item) {
+                    sorted.push(item);
+                    used.add(key);
+                }
+            });
+
+            items.forEach((item) => {
+                const key = getImageKey(item);
+                if (!used.has(key)) {
+                    sorted.push(item);
+                }
+            });
+
+            sorted.forEach((item) => gallery.appendChild(item));
+            if (isAdmin()) {
+                ensureGalleryDragHandles();
+            }
+            initGalleryLayout();
+        }
+
+        async function fetchPublishedGalleryOrder() {
+            try {
+                const response = await fetch(GALLERY_ORDER_URL, { cache: "no-store" });
+                if (!response.ok) {
+                    return null;
+                }
+                const payload = await response.json();
+                return normalizeGalleryOrder(payload.order);
+            } catch {
+                return null;
+            }
+        }
+
+        function loadGalleryOrderDraft() {
+            try {
+                const stored = JSON.parse(localStorage.getItem(ORDER_DRAFT_STORAGE_KEY) || "null");
+                return normalizeGalleryOrder(stored);
+            } catch {
+                return null;
+            }
+        }
+
+        function saveGalleryOrderDraft(order = collectGalleryOrder()) {
+            if (!isAdmin()) {
+                return;
+            }
+            localStorage.setItem(ORDER_DRAFT_STORAGE_KEY, JSON.stringify(order));
+            updateLayoutStatus();
+        }
+
+        function clearGalleryOrderDraft() {
+            localStorage.removeItem(ORDER_DRAFT_STORAGE_KEY);
+            updateLayoutStatus();
+        }
+
+        function ordersMatch(left, right) {
+            const a = normalizeGalleryOrder(left);
+            const b = normalizeGalleryOrder(right);
+            if (a.length !== b.length) {
+                return false;
+            }
+            return a.every((key, index) => key === b[index]);
+        }
+
+        function updateLayoutStatus() {
+            if (!isAdmin() || !layoutStatus) {
+                return;
+            }
+            const draft = loadGalleryOrderDraft();
+            const published = publishedGalleryOrder || [];
+            const hasUnpublishedChanges = draft.length > 0 && !ordersMatch(draft, published);
+            layoutStatus.hidden = !hasUnpublishedChanges;
+        }
+
+        async function resolveGalleryOrder() {
+            publishedGalleryOrder = await fetchPublishedGalleryOrder();
+            if (isAdmin()) {
+                const draft = loadGalleryOrderDraft();
+                if (draft.length) {
+                    return draft;
+                }
+            }
+            return publishedGalleryOrder;
+        }
+
+        function ensureGalleryDragHandles() {
+            if (!isAdmin()) {
+                return;
+            }
+
+            gallery.querySelectorAll("li").forEach((item) => {
+                const link = item.querySelector("a");
+                if (!link || link.querySelector(".gallery-item__drag-handle")) {
+                    return;
+                }
+
+                const handle = document.createElement("span");
+                handle.className = "gallery-item__drag-handle";
+                handle.setAttribute("aria-label", "Drag to reorder");
+                handle.setAttribute("draggable", "true");
+                handle.textContent = "⋮⋮";
+                handle.addEventListener("click", (event) => event.preventDefault());
+                handle.addEventListener("mousedown", (event) => event.stopPropagation());
+                link.appendChild(handle);
+            });
+        }
+
+        function clearGalleryDragState() {
+            draggedGalleryItem = null;
+            gallery.querySelectorAll("li.is-dragging, li.drag-over").forEach((item) => {
+                item.classList.remove("is-dragging", "drag-over");
+            });
+        }
+
+        function initGalleryDragDrop() {
+            if (!isAdmin()) {
+                return;
+            }
+
+            ensureGalleryDragHandles();
+
+            gallery.addEventListener("dragstart", (event) => {
+                const handle = event.target.closest(".gallery-item__drag-handle");
+                if (!handle) {
+                    return;
+                }
+
+                draggedGalleryItem = handle.closest("li");
+                if (!draggedGalleryItem) {
+                    return;
+                }
+
+                draggedGalleryItem.classList.add("is-dragging");
+                event.dataTransfer.effectAllowed = "move";
+                event.dataTransfer.setData("text/plain", getImageKey(draggedGalleryItem));
+            });
+
+            gallery.addEventListener("dragover", (event) => {
+                if (!draggedGalleryItem) {
+                    return;
+                }
+
+                event.preventDefault();
+                const target = event.target.closest("#gallery li");
+                gallery.querySelectorAll("li.drag-over").forEach((item) => {
+                    if (item !== target) {
+                        item.classList.remove("drag-over");
+                    }
+                });
+
+                if (target && target !== draggedGalleryItem) {
+                    target.classList.add("drag-over");
+                }
+            });
+
+            gallery.addEventListener("dragleave", (event) => {
+                const target = event.target.closest("#gallery li");
+                if (target) {
+                    target.classList.remove("drag-over");
+                }
+            });
+
+            gallery.addEventListener("drop", (event) => {
+                if (!draggedGalleryItem) {
+                    return;
+                }
+
+                event.preventDefault();
+                const target = event.target.closest("#gallery li");
+                if (target && target !== draggedGalleryItem) {
+                    const rect = target.getBoundingClientRect();
+                    const insertBefore = event.clientY < rect.top + rect.height / 2;
+                    if (insertBefore) {
+                        gallery.insertBefore(draggedGalleryItem, target);
+                    } else {
+                        gallery.insertBefore(draggedGalleryItem, target.nextElementSibling);
+                    }
+                    saveGalleryOrderDraft();
+                    initGalleryLayout();
+                }
+
+                clearGalleryDragState();
+            });
+
+            gallery.addEventListener("dragend", () => {
+                clearGalleryDragState();
+            });
+        }
+
+        function exportGalleryLayout() {
+            const order = collectGalleryOrder();
+            const payload = {
+                version: 1,
+                order,
+            };
+            const instructions = [
+                "Gallery layout export",
+                "",
+                "1. Save gallery-order.json into the project root (same folder as index.html).",
+                "2. Commit and push the file to GitHub.",
+                "3. After GitHub Pages redeploys, every browser will use this layout.",
+                "",
+                "Current order:",
+                JSON.stringify(payload, null, 2),
+            ].join("\n");
+
+            downloadBlob(
+                new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" }),
+                "gallery-order.json"
+            );
+            downloadBlob(new Blob([instructions], { type: "text/plain" }), "gallery-layout-export.txt");
+            clearGalleryOrderDraft();
+            publishedGalleryOrder = order;
+            updateLayoutStatus();
         }
 
         function getCategories(item) {
@@ -1935,6 +2240,7 @@
             }
 
             item.remove();
+            saveGalleryOrderDraft();
             hideCategoryMenu();
             await updateHiddenArtworkUi();
             if (!hiddenArtworkPanel.hidden) {
@@ -1956,6 +2262,7 @@
             }
 
             item.remove();
+            saveGalleryOrderDraft();
             hideCategoryMenu();
 
             const uploads = await readUploads();
@@ -2173,6 +2480,16 @@
             image.loading = "lazy";
             link.appendChild(image);
             item.appendChild(link);
+            if (isAdmin()) {
+                const handle = document.createElement("span");
+                handle.className = "gallery-item__drag-handle";
+                handle.setAttribute("aria-label", "Drag to reorder");
+                handle.setAttribute("draggable", "true");
+                handle.textContent = "⋮⋮";
+                handle.addEventListener("click", (event) => event.preventDefault());
+                handle.addEventListener("mousedown", (event) => event.stopPropagation());
+                link.appendChild(handle);
+            }
             image.addEventListener("load", () => applyGalleryLayout(image), { once: true });
             if (image.complete && image.naturalWidth) {
                 applyGalleryLayout(image);
@@ -2193,11 +2510,16 @@
                     tools: upload.tools || [],
                     uploadId: upload.id,
                 });
-                gallery.prepend(item);
+                gallery.appendChild(item);
             });
 
             exportUploadsButton.hidden = getVisibleUploads(uploads).length === 0;
-            initGalleryLayout();
+            const order = loadGalleryOrderDraft() || publishedGalleryOrder;
+            if (order?.length) {
+                applyGalleryOrder(order);
+            } else {
+                initGalleryLayout();
+            }
         }
 
         function renderCategoryCheckboxes(selectedCategories = ["other"]) {
@@ -2630,11 +2952,13 @@
             renderUploadedItems(uploads);
             applyStoredCategories();
             applyStoredTools();
+            saveGalleryOrderDraft();
             applyFilter(activeFilter);
             addArtworkPanel.hidden = true;
         });
 
         exportUploadsButton.addEventListener("click", exportUploadedArtwork);
+        exportGalleryLayoutButton.addEventListener("click", exportGalleryLayout);
 
         accessForm.addEventListener("submit", async (event) => {
             event.preventDefault();
@@ -2666,15 +2990,21 @@
 
         signOutButton.addEventListener("click", lockGallery);
 
-        function bootstrapViewerGallery() {
+        async function bootstrapViewerGallery() {
             categories = DEFAULT_CATEGORIES.map((category) => ({ ...category }));
             mergeDiscoveredCategories();
             renderFilters();
-            initGalleryLayout();
+            const order = await resolveGalleryOrder();
+            if (order?.length) {
+                applyGalleryOrder(order);
+            } else {
+                initGalleryLayout();
+            }
             applyFilter("all");
         }
 
         async function bootstrapAdminGallery() {
+            publishedGalleryOrder = await fetchPublishedGalleryOrder();
             categories = loadCategories();
             mergeDiscoveredCategories();
             renderFilters();
@@ -2682,7 +3012,6 @@
             applyStoredCategories();
             applyStoredTools();
             applyDefaultTools();
-            initGalleryLayout();
             await updateHiddenArtworkUi();
 
             try {
@@ -2690,11 +3019,23 @@
                 renderUploadedItems(uploads);
                 applyStoredCategories();
                 applyStoredTools();
-                applyFilter("all");
-                await updateHiddenArtworkUi();
             } catch {
-                applyFilter("all");
+                // uploads unavailable
             }
+
+            const draft = loadGalleryOrderDraft();
+            const order = draft.length ? draft : publishedGalleryOrder;
+            if (order?.length) {
+                applyGalleryOrder(order);
+            } else {
+                ensureGalleryDragHandles();
+                initGalleryLayout();
+            }
+
+            initGalleryDragDrop();
+            updateLayoutStatus();
+            applyFilter("all");
+            await updateHiddenArtworkUi();
         }
 
         async function bootstrapGallery() {
@@ -2702,7 +3043,7 @@
                 await bootstrapAdminGallery();
                 return;
             }
-            bootstrapViewerGallery();
+            await bootstrapViewerGallery();
         }
 
         async function initApp() {
