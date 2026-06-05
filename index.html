@@ -174,6 +174,29 @@
             color: var(--text-muted);
         }
 
+        .add-artwork__status {
+            margin: 0 0 1rem;
+            padding: 0.7rem 0.85rem;
+            border-radius: var(--radius-md);
+            font-size: 0.85rem;
+        }
+
+        .add-artwork__status[hidden] {
+            display: none;
+        }
+
+        .add-artwork__status--error {
+            border: 1px solid rgba(176, 74, 74, 0.25);
+            background: rgba(176, 74, 74, 0.08);
+            color: #8f3a3a;
+        }
+
+        .add-artwork__status--success {
+            border: 1px solid rgba(107, 91, 149, 0.18);
+            background: var(--accent-soft);
+            color: var(--text);
+        }
+
         .add-artwork__preview {
             display: flex;
             flex-direction: column;
@@ -807,9 +830,11 @@
         <section id="add-artwork" class="add-artwork admin-only" hidden>
             <h2>Add artwork</h2>
             <p class="add-artwork__hint">
-                Choose images to preview them here, set alt text and categories, then add them to the gallery.
-                New pieces are saved in this browser until you export them into the project folder.
+                Admin mode only. Choose images to preview them here, set alt text and categories, then add them to the gallery.
+                Because this is a static site, new pieces are saved in <strong>this browser only</strong> until you use
+                <strong>Export added artwork</strong> and publish the files to GitHub.
             </p>
+            <p id="add-artwork-status" class="add-artwork__status" hidden></p>
             <input type="file" id="add-artwork-files" accept="image/*" multiple>
             <div id="add-artwork-preview" class="add-artwork__preview"></div>
             <div class="add-artwork__actions">
@@ -1035,6 +1060,7 @@
         const TOOLS_STORAGE_KEY = "gallery-tool-overrides";
         const CATEGORIES_STORAGE_KEY = "gallery-categories";
         const HIDDEN_STORAGE_KEY = "gallery-hidden-items";
+        const PERMANENT_DELETIONS_STORAGE_KEY = "gallery-permanent-deletions";
         const UPLOAD_DB_NAME = "art-gallery-uploads";
         const UPLOAD_STORE_NAME = "uploads";
         const WIDE_ASPECT_RATIO = 1.55;
@@ -1066,6 +1092,7 @@
         const addArtworkPreview = document.getElementById("add-artwork-preview");
         const addArtworkSubmit = document.getElementById("add-artwork-submit");
         const addArtworkClear = document.getElementById("add-artwork-clear");
+        const addArtworkStatus = document.getElementById("add-artwork-status");
         const exportUploadsButton = document.getElementById("export-uploads");
         const filtersNav = document.getElementById("filters");
         const subFiltersNav = document.getElementById("sub-filters");
@@ -1658,6 +1685,12 @@
             localStorage.setItem(STORAGE_KEY, JSON.stringify(overrides));
         }
 
+        function clearToolOverride(imageKey) {
+            const overrides = loadToolOverrides();
+            delete overrides[imageKey];
+            localStorage.setItem(TOOLS_STORAGE_KEY, JSON.stringify(overrides));
+        }
+
         function loadHiddenRecords() {
             try {
                 const raw = JSON.parse(localStorage.getItem(HIDDEN_STORAGE_KEY) || "[]");
@@ -1719,6 +1752,128 @@
                     item.remove();
                 }
             });
+        }
+
+        function loadPermanentDeletions() {
+            try {
+                const stored = JSON.parse(localStorage.getItem(PERMANENT_DELETIONS_STORAGE_KEY) || "[]");
+                return Array.isArray(stored) ? stored : [];
+            } catch {
+                return [];
+            }
+        }
+
+        function savePermanentDeletions(records) {
+            localStorage.setItem(PERMANENT_DELETIONS_STORAGE_KEY, JSON.stringify(records));
+        }
+
+        function addPermanentDeletion(record) {
+            const records = loadPermanentDeletions();
+            if (!records.some((entry) => entry.key === record.key)) {
+                records.push(record);
+                savePermanentDeletions(records);
+            }
+        }
+
+        function applyPermanentDeletions() {
+            const deletedHrefs = new Set(loadPermanentDeletions().map((entry) => entry.href));
+            gallery.querySelectorAll('li:not([data-uploaded="true"])').forEach((item) => {
+                const href = item.querySelector("a")?.getAttribute("href");
+                if (href && deletedHrefs.has(href)) {
+                    item.remove();
+                }
+            });
+        }
+
+        function confirmPermanentDeletion({ firstMessage, secondMessage }) {
+            if (!confirm(firstMessage)) {
+                return false;
+            }
+            return confirm(secondMessage);
+        }
+
+        function getBuiltinDeletionPaths(href, src) {
+            const files = [];
+            if (href?.startsWith("images/")) {
+                files.push(href);
+            }
+            if (src?.startsWith("images/") && !files.includes(src)) {
+                files.push(src);
+            }
+            return files;
+        }
+
+        function removeGalleryListItemFromHtml(html, href) {
+            const escaped = href.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+            const pattern = new RegExp(
+                `\\n?[ \\t]*<li[^>]*>\\s*<a href="${escaped}"[^>]*>[\\s\\S]*?</a>\\s*</li>`,
+                "gi"
+            );
+            return html.replace(pattern, "");
+        }
+
+        async function fetchIndexHtml() {
+            try {
+                const response = await fetch("index.html", { cache: "no-store" });
+                if (!response.ok) {
+                    return null;
+                }
+                return await response.text();
+            } catch {
+                return null;
+            }
+        }
+
+        function buildDeletionPowerShell(files) {
+            const lines = [
+                "# Run from the project root (same folder as index.html).",
+                "$files = @(",
+                ...files.map((file) => `    "${file.replace(/\//g, "\\\\")}"`),
+                ")",
+                "foreach ($file in $files) {",
+                "    if (Test-Path -LiteralPath $file) {",
+                "        Remove-Item -LiteralPath $file -Force",
+                '        Write-Host "Deleted $file"',
+                "    } else {",
+                '        Write-Host "Not found: $file"',
+                "    }",
+                "}",
+            ];
+            return lines.join("\n");
+        }
+
+        async function exportBuiltinDeletionArtifacts() {
+            const deletions = loadPermanentDeletions();
+            const files = [...new Set(deletions.flatMap((entry) => getBuiltinDeletionPaths(entry.href, entry.src)))];
+            const html = await fetchIndexHtml();
+            const instructions = [
+                "Permanent artwork deletion",
+                "",
+                "1. Save the downloaded index.html over the project copy (if provided).",
+                "2. Run delete-artwork.ps1 from the project root, or run:",
+                "   python delete_artwork.py gallery-deletion.json",
+                "3. Commit and push the changes to GitHub.",
+                "",
+                "Deleted artwork:",
+                ...deletions.map((entry) => `- ${entry.alt} (${entry.href})`),
+                "",
+                "Files to remove:",
+                ...files.map((file) => `- ${file}`),
+            ];
+
+            downloadBlob(
+                new Blob([JSON.stringify({ deletions }, null, 2)], { type: "application/json" }),
+                "gallery-deletion.json"
+            );
+            downloadBlob(new Blob([buildDeletionPowerShell(files)], { type: "text/plain" }), "delete-artwork.ps1");
+            if (html) {
+                let updatedHtml = html;
+                deletions.forEach((entry) => {
+                    updatedHtml = removeGalleryListItemFromHtml(updatedHtml, entry.href);
+                });
+                downloadBlob(new Blob([updatedHtml], { type: "text/html" }), "index.html");
+            }
+            downloadBlob(new Blob([instructions.join("\n")], { type: "text/plain" }), "gallery-deletion-steps.txt");
         }
 
         function getVisibleUploads(uploads) {
@@ -1803,6 +1958,15 @@
             renderSubFilters();
         }
 
+        function showAllGalleryItems() {
+            activeFilter = "all";
+            activeSubFilter = "all";
+            filtersNav.querySelectorAll("button").forEach((button) => {
+                button.setAttribute("aria-pressed", button.dataset.filter === "all" ? "true" : "false");
+            });
+            applyFilter("all");
+        }
+
         function applyGalleryLayout(image) {
             const item = image.closest("li");
             if (!item) {
@@ -1859,7 +2023,34 @@
             categoryMenu.style.top = `${Math.max(8, top)}px`;
         }
 
+        function createUploadId() {
+            if (globalThis.crypto?.randomUUID) {
+                return crypto.randomUUID();
+            }
+            return `upload-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+        }
+
+        function setAddArtworkStatus(message, type = "error") {
+            if (!addArtworkStatus) {
+                return;
+            }
+            addArtworkStatus.hidden = !message;
+            addArtworkStatus.textContent = message;
+            addArtworkStatus.className = `add-artwork__status add-artwork__status--${type}`;
+        }
+
+        function clearAddArtworkStatus() {
+            setAddArtworkStatus("");
+            if (addArtworkStatus) {
+                addArtworkStatus.hidden = true;
+            }
+        }
+
         function openUploadDb() {
+            if (!window.indexedDB) {
+                return Promise.reject(new Error("This browser does not support local artwork storage."));
+            }
+
             if (!uploadDbPromise) {
                 uploadDbPromise = new Promise((resolve, reject) => {
                     const request = indexedDB.open(UPLOAD_DB_NAME, 1);
@@ -1867,10 +2058,26 @@
                         request.result.createObjectStore(UPLOAD_STORE_NAME, { keyPath: "id" });
                     };
                     request.onsuccess = () => resolve(request.result);
-                    request.onerror = () => reject(request.error);
+                    request.onerror = () => reject(request.error || new Error("Could not open local artwork storage."));
                 });
             }
             return uploadDbPromise;
+        }
+
+        async function ensureUploadStorageWorks() {
+            const db = await openUploadDb();
+            const probeId = "__upload-storage-probe__";
+            await saveUpload({
+                id: probeId,
+                filename: "probe.txt",
+                alt: "probe",
+                categories: ["other"],
+                tools: [],
+                blob: new Blob(["ok"], { type: "text/plain" }),
+                addedAt: Date.now(),
+            });
+            await deleteUpload(probeId);
+            return db;
         }
 
         function readUploads() {
@@ -1966,12 +2173,16 @@
             }
         }
 
-        async function permanentlyDeleteHiddenItem({ key, type, uploadId }) {
+        async function permanentlyDeleteHiddenItem({ key, type, uploadId, href, src, alt }) {
             if (type === "upload") {
                 await deleteUpload(uploadId);
             } else {
                 removeHiddenRecord(key);
                 clearOverride(key);
+                clearToolOverride(key);
+                addPermanentDeletion({ key, href, src, alt });
+                applyPermanentDeletions();
+                await exportBuiltinDeletionArtifacts();
             }
 
             const uploads = await readUploads();
@@ -2466,11 +2677,27 @@
             applyFilter(activeFilter);
         });
 
-        document.getElementById("toggle-add-artwork").addEventListener("click", () => {
+        document.getElementById("toggle-add-artwork").addEventListener("click", async () => {
+            if (!isAdmin()) {
+                setAddArtworkStatus("Sign in with the admin passcode to add artwork.", "error");
+                addArtworkPanel.hidden = false;
+                return;
+            }
+
             addArtworkPanel.hidden = !addArtworkPanel.hidden;
             if (!addArtworkPanel.hidden) {
                 hiddenArtworkPanel.hidden = true;
                 manageCategoriesPanel.hidden = true;
+                clearAddArtworkStatus();
+                try {
+                    await ensureUploadStorageWorks();
+                } catch (error) {
+                    setAddArtworkStatus(
+                        `${error.message || error} Try opening the site over https:// (for example GitHub Pages) instead of a local file path.`,
+                        "error"
+                    );
+                    addArtworkSubmit.disabled = true;
+                }
             }
         });
 
@@ -2575,14 +2802,35 @@
                 return;
             }
 
-            const message = payload.type === "upload"
-                ? "Delete this added artwork permanently?"
-                : "Remove this hidden image from this browser? It will still exist in index.html.";
-            if (!confirm(message)) {
-                return;
+            const alt = card.querySelector('input[name="alt"]')?.value.trim()
+                || card.querySelector("img")?.alt
+                || "this artwork";
+            const href = card.querySelector(".hidden-artwork__thumb-link")?.getAttribute("href") || "";
+            const src = card.querySelector("img")?.getAttribute("src") || "";
+
+            if (payload.type === "upload") {
+                if (!confirmPermanentDeletion({
+                    firstMessage: `Permanently delete "${alt}"? This removes the uploaded image from this browser.`,
+                    secondMessage: "Final warning: this cannot be undone. Delete this artwork permanently?",
+                })) {
+                    return;
+                }
+            } else {
+                const files = getBuiltinDeletionPaths(href, src);
+                if (!confirmPermanentDeletion({
+                    firstMessage: `Permanently delete "${alt}"? This removes it from the gallery and deletes these files:\n\n${files.join("\n")}`,
+                    secondMessage: "Final warning: this cannot be undone. You will receive updated index.html and a delete script for your project folder. Continue?",
+                })) {
+                    return;
+                }
             }
 
-            await permanentlyDeleteHiddenItem(payload);
+            await permanentlyDeleteHiddenItem({
+                ...payload,
+                href,
+                src,
+                alt,
+            });
         });
 
         addArtworkFiles.addEventListener("change", () => {
@@ -2609,29 +2857,56 @@
         });
 
         addArtworkSubmit.addEventListener("click", async () => {
-            const previewItems = [...addArtworkPreview.querySelectorAll(".add-artwork__item")];
-            for (let index = 0; index < previewItems.length; index += 1) {
-                const formData = readPendingUploadForm(previewItems[index]);
-                const file = pendingUploads[index].file;
-                const record = {
-                    id: crypto.randomUUID(),
-                    filename: file.name,
-                    alt: formData.alt,
-                    categories: formData.categories,
-                    tools: formData.tools,
-                    blob: file,
-                    addedAt: Date.now(),
-                };
-                await saveUpload(record);
+            if (!isAdmin()) {
+                setAddArtworkStatus("Sign in with the admin passcode to add artwork.", "error");
+                return;
             }
 
-            clearPendingUploads();
-            const uploads = await readUploads();
-            renderUploadedItems(uploads);
-            applyStoredCategories();
-            applyStoredTools();
-            applyFilter(activeFilter);
-            addArtworkPanel.hidden = true;
+            const previewItems = [...addArtworkPreview.querySelectorAll(".add-artwork__item")];
+            if (!previewItems.length) {
+                setAddArtworkStatus("Choose one or more image files first.", "error");
+                return;
+            }
+
+            addArtworkSubmit.disabled = true;
+            clearAddArtworkStatus();
+
+            try {
+                await ensureUploadStorageWorks();
+
+                for (let index = 0; index < previewItems.length; index += 1) {
+                    const formData = readPendingUploadForm(previewItems[index]);
+                    const file = pendingUploads[index].file;
+                    const record = {
+                        id: createUploadId(),
+                        filename: file.name,
+                        alt: formData.alt,
+                        categories: formData.categories,
+                        tools: formData.tools,
+                        blob: file,
+                        addedAt: Date.now(),
+                    };
+                    await saveUpload(record);
+                }
+
+                clearPendingUploads();
+                const uploads = await readUploads();
+                renderUploadedItems(uploads);
+                applyStoredCategories();
+                applyStoredTools();
+                showAllGalleryItems();
+                exportUploadsButton.hidden = getVisibleUploads(uploads).length === 0;
+                setAddArtworkStatus(
+                    `Added ${previewItems.length} artwork item${previewItems.length === 1 ? "" : "s"} to this browser. Use Export added artwork when you are ready to publish them.`,
+                    "success"
+                );
+            } catch (error) {
+                setAddArtworkStatus(
+                    `Could not save artwork: ${error.message || error}. This feature needs browser storage and works best when the site is opened over https://.`,
+                    "error"
+                );
+                renderPendingUploads();
+            }
         });
 
         exportUploadsButton.addEventListener("click", exportUploadedArtwork);
@@ -2670,6 +2945,7 @@
             categories = DEFAULT_CATEGORIES.map((category) => ({ ...category }));
             mergeDiscoveredCategories();
             renderFilters();
+            applyPermanentDeletions();
             initGalleryLayout();
             applyFilter("all");
         }
@@ -2679,6 +2955,7 @@
             mergeDiscoveredCategories();
             renderFilters();
             applyHiddenItems();
+            applyPermanentDeletions();
             applyStoredCategories();
             applyStoredTools();
             applyDefaultTools();
@@ -2686,13 +2963,15 @@
             await updateHiddenArtworkUi();
 
             try {
+                await ensureUploadStorageWorks();
                 const uploads = await readUploads();
                 renderUploadedItems(uploads);
                 applyStoredCategories();
                 applyStoredTools();
                 applyFilter("all");
                 await updateHiddenArtworkUi();
-            } catch {
+            } catch (error) {
+                console.error("Could not load browser-added artwork:", error);
                 applyFilter("all");
             }
         }

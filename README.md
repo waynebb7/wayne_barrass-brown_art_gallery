@@ -82,12 +82,13 @@ It can take 1–2 minutes after a push for changes to appear.
 
 ### In the browser
 
-1. Open the gallery and click **Add artwork**.
-2. Choose one or more image files.
-3. Set alt text and categories for each preview.
-4. Click **Add to gallery**.
+1. Sign in with the **admin** passcode (viewer mode is read-only).
+2. Open the gallery and click **Add artwork**.
+3. Choose one or more image files.
+4. Set alt text and categories for each preview.
+5. Click **Add to gallery**.
 
-New pieces appear at the top of the gallery with a dashed outline. They are stored in this browser until you export them.
+New pieces appear at the top of the gallery with a dashed outline. Because GitHub Pages is a static site, they are stored in **this browser only** until you export them. Other visitors will not see them until you publish the exported files.
 
 5. Click **Export added artwork** to download:
    - each image file
@@ -119,6 +120,29 @@ Set `data-categories` to one or more of: `digital`, `manga`, `pumpkins`, `sketch
 
 You can also right-click any image and change its categories. Those edits are saved in localStorage for that browser only.
 
+## Permanently deleting hidden artwork (admin)
+
+In **Hidden artwork**, **Delete permanently** asks for confirmation twice.
+
+- **Added artwork** (browser uploads) is erased from this browser immediately.
+- **Built-in gallery images** are removed from the gallery and the browser records a permanent deletion. Your browser downloads:
+  - `index.html` with the gallery entry removed (when the page can fetch the current file)
+  - `delete-artwork.ps1` to delete the original and display image files
+  - `gallery-deletion.json` for the Python alternative below
+  - `gallery-deletion-steps.txt` with instructions
+
+Apply the deletion to the project folder:
+
+```powershell
+# Option A: PowerShell
+.\delete-artwork.ps1
+
+# Option B: Python
+python delete_artwork.py gallery-deletion.json
+```
+
+Then commit and push so GitHub Pages stops serving the removed images.
+
 ## Project structure
 
 | Path | Purpose |
@@ -128,4 +152,5 @@ You can also right-click any image and change its categories. Those edits are sa
 | `images/` | Full-resolution originals (used when an image is clicked) |
 | `images/display/` | Optimized display images (max 800px wide) |
 | `optimize_images.py` | Regenerates files in `images/display/` from `index.html` |
+| `delete_artwork.py` | Removes gallery entries from `index.html` and deletes image files |
 | `LICENSE` | MIT License |
